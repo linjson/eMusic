@@ -8,10 +8,10 @@ var sequelize = new Sequelize(dbFile, null, null, {
     storage: dbFile
 });
 
-sequelize.sync({
-    //logging: console.log
+//sequelize.sync({
+//logging: console.log
 //    force: true
-});
+//});
 
 var dataset = {
     mulu: null,
@@ -29,18 +29,27 @@ var dataset = {
             path: Sequelize.STRING
         });
 
+    },
+
+    addMulu(name, func){
+        this.mulu.create({name}).then(func);
+    },
+    getMuluListCount(func){
+        this.mulu.count().then(func);
+    },
+
+    getMuluList(func){
+        this.mulu.findAll().then(func);
+    },
+    updateMulu(id, mulu, func){
+        this.mulu.update({name: mulu}, {where: {id: id}}).then(func);
     }
+
+
 }
 
 
 dataset.init();
 
-//dataset.mulu.create({name:"test"});
 
-dataset.mulu.findAll({where:{
-    name:{
-        $like:"tt"
-    }
-}}).then(function(e){
-    console.log("a",e.length)
-});
+module.exports = dataset;

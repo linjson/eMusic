@@ -6,6 +6,7 @@
 let React = require('react');
 let ReactDom = require('react-dom')
 let Mui = require('material-ui');
+
 let injectTapEventPlugin = require("react-tap-event-plugin");
 let defaultStyle = {
     defaultPadding: {paddingTop: 0, paddingBottom: 0}
@@ -15,7 +16,11 @@ let defaultStyle = {
 injectTapEventPlugin();
 window.React = React;
 window.Mui = Mui;
-window.defaultStyle=defaultStyle;
+window.defaultStyle = defaultStyle;
+
+
+
+
 
 window.onload = ()=> {
     let Root = require('../js/app.js');

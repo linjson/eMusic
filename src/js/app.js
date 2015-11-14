@@ -1,5 +1,10 @@
 
 
+let DataSet = require('./data');
+
+window.DataSet = DataSet;
+
+
 let LeftContent=require('./left');
 
 let Root = React.createClass({
@@ -15,6 +20,8 @@ let Root = React.createClass({
         </div>;
     }
 });
+
+
 
 
 module.exports = Root;

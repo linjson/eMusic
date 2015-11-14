@@ -20,6 +20,15 @@ const ThemeManager = require('material-ui/lib/styles/theme-manager');
 const theme = require('./theme');
 
 let LeftContent = React.createClass({
+
+    getInitialState(){
+
+
+        return {
+            mulu: []
+        };
+    },
+
     //the key passed through context must be called "muiTheme"
     childContextTypes: {
         muiTheme: React.PropTypes.object,
@@ -42,8 +51,16 @@ let LeftContent = React.createClass({
     },
 
     onMenuItemClick(e, item){
-        console.log("a", item);
+        if (item.key == "newList") {
+            DataSet.addMulu("新建列表", ()=> {
+                DataSet.getMuluList((data)=> {
+                    this.setState({mulu: data});
+                });
+            });
+
+        }
     },
+
 
     renderMenu(){
 
@@ -58,10 +75,18 @@ let LeftContent = React.createClass({
         </IconMenu>;
     },
 
+    componentWillMount(){
+
+        DataSet.getMuluList((data)=> {
+            if (!data) {
+                return;
+            }
+            this.setState({mulu: data});
+        });
+
+    },
+
     render(){
-
-
-        let itemlist = ["Starred", "Inbox"];
 
         return <div>
             <AppBar title={this.renderTitle()} showMenuIconButton={false}
@@ -69,7 +94,7 @@ let LeftContent = React.createClass({
                 />
 
             <div className="left-list">
-                <SelectList dataSet={itemlist}/>
+                <SelectList dataSet={this.state.mulu}/>
             </div>
         </div>;
 
