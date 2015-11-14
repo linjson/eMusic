@@ -1,0 +1,84 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: normal;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format("woff2"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff) format("woff"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format("truetype"); }
+a {
+  color: #ff4081;
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: underline; }
+
+html {
+  font-family: 'Roboto', sans-serif; }
+
+.baseBody, body, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-size: 15px; }
+
+#rightContent {
+  height: 500px;
+  width: 600px;
+  background: #ffffff;
+  float: left; }
+
+#leftContent {
+  height: 500px;
+  background: #ffffff;
+  width: 200px;
+  float: left; }
+
+#bottomContent {
+  clear: both;
+  height: 78px;
+  background: #1D262C;
+  color: white; }
+
+.material-icons, .material-icons-black, .icon-menu-black:before, .icon-add-black:before, .icon-more-black:before, .material-icons-white, .icon-menu-white:before, .icon-add-white:before, .icon-more-white:before {
+  font-family: 'Material Icons';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+.material-icons-black, .icon-menu-black:before, .icon-add-black:before, .icon-more-black:before {
+  color: #000000; }
+
+.material-icons-white, .icon-menu-white:before, .icon-add-white:before, .icon-more-white:before {
+  color: #ffffff; }
+
+.icon-menu-white:before {
+  content: "\e8fe"; }
+
+.icon-add-white:before {
+  content: '\e89c'; }
+
+.icon-more-white:before {
+  content: '\e5d4'; }
+
+.icon-menu-black:before {
+  content: "\e8fe"; }
+
+.icon-add-black:before {
+  content: '\e89c'; }
+
+.icon-more-black:before {
+  content: '\e5d4'; }
+
+.icon-style {
+  margin-top: -5px; }
+
+.left-list {
+  height: 460px;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+/*# sourceMappingURL=index.css.map */

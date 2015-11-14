@@ -1,0 +1,37 @@
+{
+  "name": "eMusic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "electron-compile": "^1.0.1",
+    "electron-packager": "^5.1.1",
+    "electron-compilers": "^1.0.1",
+    "material-design-icons": "^2.0.0",
+    "material-ui": "^0.13.1",
+    "react": "^0.14.1",
+    "react-addons-create-fragment": "^0.14.1",
+    "react-addons-pure-render-mixin": "^0.14.1",
+    "react-dom": "^0.14.1",
+    "react-tap-event-plugin": "^0.2.1",
+    "react-addons-update": "^0.14.1",
+    "react-addons-transition-group": "^0.14.1",
+    "sequelize": "^3.13.0",
+    "sqlite3": "^3.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://linjson@github.com/linjson/eMusic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linjson/eMusic/issues"
+  },
+  "homepage": "https://github.com/linjson/eMusic#readme"
+}

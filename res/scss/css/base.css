@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: normal;
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format("woff2"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.woff) format("woff"), url(../../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format("truetype"); }
+a {
+  color: #ff4081;
+  text-decoration: none; }
+
+a:hover {
+  text-decoration: underline; }
+
+html {
+  font-family: 'Roboto', sans-serif; }
+
+.baseBody, body, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-size: 15px; }
+
+/*# sourceMappingURL=base.css.map */
