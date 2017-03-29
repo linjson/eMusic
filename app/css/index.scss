@@ -1,0 +1,36 @@
+@import "base.scss";
+#application, .applicationBoby {
+  height: 100%;
+}
+
+.applicationBoby {
+  display: flex;
+  flex-direction: column;
+}
+
+.homeTop {
+  background-color: #ff4081;
+}
+
+.homeMiddle {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  background-color: #1D262C;
+}
+
+.homeBottom {
+  height: 50px;
+  background-color: #ffec7a;
+}
+
+.homeLeft{
+  width:300px;
+  background-color: #F4F4F4;
+}
+
+.homeRight{
+  flex:1;
+  background-color: #ff4081;
+}
+
