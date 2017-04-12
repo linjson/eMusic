@@ -12,7 +12,7 @@ var url = require('url');
 var fs = require('fs');
 
 const WindowMove = require('./app/ipc/WindowMoveIPC').moveApp;
-
+const {DataBaseInit}=require('./app/ipc/DataBaseIPC');
 // var electronCompile=require('electron-compile');
 // 给我们的服务器发送异常报告。
 //require('crash-reporter').start();
@@ -48,6 +48,11 @@ app.on('ready', function () {
     // }
 
 
+    // Music.create({
+    //     name: 'XiaoMing',
+    //     sort: 0,
+    // })
+
     //var _ = require("underscore-plus");
     var opt = {
         width: 800,
@@ -77,13 +82,13 @@ app.on('ready', function () {
     mainWindow = new BrowserWindow(opt);
 
     WindowMove(mainWindow);
+    DataBaseInit(()=>{
+        mainWindow.loadURL(targetUrl);
 
-    // 加载应用的 index.html
-    //mainWindow.loadURL("http://www.schillmania.com/projects/soundmanager2/doc/getstarted/#troubleshooting-flash9-highperformance");
-    mainWindow.loadURL(targetUrl);
+        mainWindow.openDevTools();
+    });
 
-    // 打开开发工具
-    mainWindow.openDevTools();
+
 
     // 当 window 被关闭，这个事件会被发出
     mainWindow.on('closed', function () {

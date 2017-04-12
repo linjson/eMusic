@@ -69,9 +69,14 @@ module.exports = {
                 exclude: /node_modules/,
             },
             {
-                test: /\.(css|scss)$/,
+                test: /\.(css)$/,
                 exclude: /^node_modules$/,
                 loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader'}),
+            },
+            {
+                test: /\.(scss)$/,
+                exclude: /^node_modules$/,
+                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!sass-loader'}),
             },
             {
                 test: /\.(jpe?g|png|gif|svg|eot|ttf|woff2|woff)$/i,

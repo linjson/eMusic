@@ -1,4 +1,5 @@
 @import "base.scss";
+//@import "../../node_modules/material-design-icons/iconfont/material-icons.css";
 #application, .applicationBoby {
   height: 100%;
 }
@@ -27,10 +28,27 @@
 .homeLeft{
   width:300px;
   background-color: #F4F4F4;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .homeRight{
   flex:1;
   background-color: #ff4081;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
+.test{
+  background-color: red;
+}
+
+.icon_add:before {
+  @extend .material-icons;
+  content: "\e145";
+}
+
+.icon_chevron_right:before{
+  @extend .material-icons;
+  content: "\e5cc";
+}
