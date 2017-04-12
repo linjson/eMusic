@@ -2,6 +2,7 @@
  * Created by ljs on 2017/3/30.
  */
 require('sqlite3');
+const _ = require('lodash');
 const ipcMain = require('electron').ipcMain
 const {DataEvent}=require('./DataBaseIPCConfig')
 
@@ -54,25 +55,38 @@ const DataBaseEventFuncList = [
                 sort = await Musics.count();
             }
             const v = await Musics.create({name, sort});
-            e.sender.send(DataEvent.addMusic, v.toJSON());
+            e.returnValue = v.toJSON();
         }
     },
     {
         eventName: DataEvent.renameMusic,
         event: async(e, {id, name}) => {
-            console.log("==>",name,id);
-            const v=await Musics.update({name},{ where:{id}});
-            e.sender.send(DataEvent.renameMusic, v.toString());
+            const v = await Musics.update({name}, {where: {id}});
+            e.returnValue = v.toString();
         }
     },
     {
         eventName: DataEvent.sortMusic,
         event: async(e, {id, sort}) => {
-            console.log("==>",name,id);
-            const v=await Musics.update({sort},{ where:{id}});
-            e.sender.send(DataEvent.renameMusic, v.toString());
+            const v = await Musics.update({sort}, {where: {id}});
+            e.returnValue = v.toJSON();
         }
     },
+    {
+        eventName: DataEvent.listMusic,
+        event: async(e, {}) => {
+            const v = await Musics.findAll();
+            const list = _.forEach(v, (n) => n.toJSON())
+            e.returnValue = list;
+        }
+    },
+    {
+        eventName: DataEvent.delMusic,
+        event: async(e, {id}) => {
+            const v = await Musics.destroy({where: {id}});
+            e.returnValue = v;
+        }
+    }
 
 ]
 
