@@ -46,6 +46,10 @@ function BindDataBaseEvent(eventList) {
 
 }
 
+function convertListJson(list) {
+    return _.map(list, (n) => n.toJSON());
+}
+
 
 const DataBaseEventFuncList = [
     {
@@ -66,17 +70,10 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.sortMusic,
-        event: async(e, {id, sort}) => {
-            const v = await Musics.update({sort}, {where: {id}});
-            e.returnValue = v.toJSON();
-        }
-    },
-    {
         eventName: DataEvent.listMusic,
         event: async(e, {}) => {
-            const v = await Musics.findAll();
-            const list = _.forEach(v, (n) => n.toJSON())
+            const v = await Musics.findAll({order: [['sort']]});
+            const list = convertListJson(v);
             e.returnValue = list;
         }
     },
@@ -86,7 +83,33 @@ const DataBaseEventFuncList = [
             const v = await Musics.destroy({where: {id}});
             e.returnValue = v;
         }
-    }
+    },
+    {
+        eventName: DataEvent.sortMusic,
+        event: async(e, {id, value, orderby}) => {
+            let sort = orderby == "up" ? {lt: value} : {gt: value};
+            let order = orderby == "up" ? [["sort", "desc"]] : null;
+            const v = await Musics.findAll({
+                where: {
+                    sort
+                }, limit: 2, order
+            });
+
+            const list = convertListJson(v);
+            if (list.length == 0) {
+                e.returnValue = false;
+                return;
+            }
+            let result = 0;
+            if (list.length == 1) {
+                result = list[0].sort + (orderby == "down" ? 1 : -1);
+            } else {
+                result = _.reduce(list, (total, n) => total + n.sort, 0) / 2;
+            }
+            await Musics.update({sort: result}, {where: {id}});
+            e.returnValue = true;
+        }
+    },
 
 ]
 

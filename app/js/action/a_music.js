@@ -32,12 +32,22 @@ const action = {
         }
     },
 
-    renameMusic(id,name){
+    renameMusic(id, name){
         return (dispatch, state) => {
-            ipc.sendSync(DataEvent.renameMusic, {id,name});
+            ipc.sendSync(DataEvent.renameMusic, {id, name});
             this._listMusic(dispatch);
         }
+    },
+
+    sortMusic(id, value, orderby){
+        return (dispatch, state) => {
+            const r = ipc.sendSync(DataEvent.sortMusic, {id, value, orderby});
+            if (r) {
+                this._listMusic(dispatch);
+            }
+        }
     }
+
 
 }
 

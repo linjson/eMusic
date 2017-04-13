@@ -119,6 +119,21 @@ class MusicItem extends Component {
 
     }
 
+    moveDown = () => {
+        let {data}=this.props;
+
+        let {id, sort}=data;
+        this.props.sortMusic && this.props.sortMusic(id, sort, "down");
+
+    }
+
+    moveUp = () => {
+        let {data}=this.props;
+        let {id, sort}=data;
+        this.props.sortMusic && this.props.sortMusic(id, sort, "up");
+
+    }
+
     render() {
         let {edit}=this.state;
         let {data}=this.props;
@@ -133,7 +148,11 @@ class MusicItem extends Component {
                            onKeyDown={this.inputKeyDown}
                            onBlur={this.hideInput}/>
         } else {
-            const el = <div><ListMenu data={data} delMusic={this.props.delMusic} rename={this.showInput}/>
+            const el = <div><ListMenu data={data}
+                                      delMusic={this.props.delMusic}
+                                      moveDown={this.moveDown}
+                                      moveUp={this.moveUp}
+                                      rename={this.showInput}/>
             </div>;
             v = <ListItem primaryText={this.props.text} rightIconButton={el}/>;
         }
@@ -167,6 +186,10 @@ class MusicList extends Component {
         this.props.renameMusic(id, name);
     }
 
+    sortMusic = (id, value, orderby) => {
+        this.props.sortMusic(id, value, orderby)
+    }
+
     renderItems() {
         let {musicList}=this.props;
         console.log("==>", musicList)
@@ -179,6 +202,7 @@ class MusicList extends Component {
                               text={n.name}
                               data={n}
                               delMusic={this.delMusic}
+                              sortMusic={this.sortMusic}
                               renameMusic={this.renameMusic}/>
         });
 
@@ -229,7 +253,10 @@ function mapActionToProps(dispatch) {
         },
         renameMusic: (id, name) => {
             dispatch(action.renameMusic(id, name))
-        }
+        },
+        sortMusic: (id, value, orderby) => {
+            dispatch(action.sortMusic(id, value, orderby))
+        },
     }
 }
 

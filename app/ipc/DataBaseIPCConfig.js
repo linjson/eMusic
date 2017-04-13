@@ -5,6 +5,7 @@ const DataEvent = keymirror({
     sortMusic: null,
     listMusic:null,
     delMusic:null,
+    sortMusic:null,
 
 })
 
