@@ -56,7 +56,8 @@ const DataBaseEventFuncList = [
         eventName: DataEvent.addMusic,
         event: async(e, {name, sort}) => {
             if (!sort) {
-                sort = await Musics.count();
+                sort = await Musics.max('sort');
+                sort += 1;
             }
             const v = await Musics.create({name, sort});
             e.returnValue = v.toJSON();
