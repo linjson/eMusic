@@ -105,7 +105,7 @@ const DataBaseEventFuncList = [
             if (list.length == 1) {
                 result = list[0].sort + (orderby == "down" ? 1 : -1);
             } else {
-                result = _.reduce(list, (total, n) => total + n.sort, 0) / 2;
+                result = _.sumBy(list, (n) => n.sort) / 2;
             }
             await Musics.update({sort: result}, {where: {id}});
             e.returnValue = true;
