@@ -7,6 +7,9 @@ const ipcMain = require('electron').ipcMain
 const {DataEvent}=require('./DataBaseIPCConfig')
 
 const Sequelize = require('sequelize');
+const path = require('path');
+const fs = require('fs');
+const filesize = require("filesize");
 
 var dbFile = "emusic.sqlite3";
 
@@ -27,13 +30,16 @@ var Tracks = sequelize.define('tracks', {
     name: Sequelize.STRING,
     path: Sequelize.STRING,
     length: Sequelize.INTEGER,
+    size: Sequelize.STRING,
     times: Sequelize.INTEGER,
+    mid: Sequelize.INTEGER,
 }, {
     timestamps: false // timestamps will now be true
 });
 
-
+var taglib;
 function DataBaseInit(cb) {
+    taglib = require('taglib2')
     sequelize.sync().then(cb)
 }
 
@@ -81,7 +87,9 @@ const DataBaseEventFuncList = [
     {
         eventName: DataEvent.delMusic,
         event: async(e, {id}) => {
+            await Tracks.destroy({where: {mid: id}});
             const v = await Musics.destroy({where: {id}});
+
             e.returnValue = v;
         }
     },
@@ -111,9 +119,60 @@ const DataBaseEventFuncList = [
             e.returnValue = true;
         }
     },
+    {
+        eventName: DataEvent.listTrack,
+        event: async(e, {mid}) => {
+            const v = await Tracks.findAll({
+                where: {
+                    mid
+                }
+            });
+
+            e.returnValue = convertListJson(v);
+
+
+        }
+
+    },
+    {
+        eventName: DataEvent.addTrack,
+        event: (e, {files, i, mid}) => {
+
+            if (i == files.length) {
+                e.sender.send(DataEvent.importDialog, {open: false});
+                e.sender.send(DataEvent.finishTrack, {id: mid});
+                return;
+            }
+
+
+            const file = files[i];
+            e.sender.send(DataEvent.importDialog, {name: file, max: files.length, value: (i + 1), open: true});
+
+            const tags = taglib.readTagsSync(file);
+
+            const m = {
+                name: path.basename(file, ".mp3"),
+                path: file,
+                length: tags.length,
+                size: filesize(fs.statSync(file).size),
+                mid,
+                times: 0
+            }
+            // const v = await Tracks.create(m)
+            Tracks.create(m).then(() => {
+                e.sender.send(DataEvent.nextTrack, {
+                    files, i: (i + 1), mid
+                })
+                ;
+            })
+
+        }
+    },
 
 ]
 
 BindDataBaseEvent(DataBaseEventFuncList);
 
-module.exports = {DataBaseInit, Musics};
+module.exports = {
+    DataBaseInit, Musics,
+};

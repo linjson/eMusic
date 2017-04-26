@@ -34,9 +34,10 @@
 
 .homeRight{
   flex:1;
-  background-color: #ff4081;
+  background-color: #ffffff;
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
 }
 
 .test{
@@ -51,4 +52,16 @@
 .icon_chevron_right:before{
   @extend .material-icons;
   content: "\e5cc";
+}
+
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #00BCD4;
 }

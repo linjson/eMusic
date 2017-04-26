@@ -13,7 +13,7 @@ import thunk from 'redux-thunk'
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const AppReduce = require('./reducer/r_music')
+const AppReduce = require('./reducer')
 const Home = require('./home');
 import {Provider, connect} from 'react-redux';
 
@@ -30,8 +30,18 @@ function configStore(initState) {
 }
 const ipc = require('electron').ipcRenderer
 import {DataEvent} from '../ipc/DataBaseIPCConfig';
-let list=ipc.sendSync(DataEvent.listMusic,{})
-var store=configStore({musicList: {loading:false,list}});
+let list = ipc.sendSync(DataEvent.listMusic, {})
+var store = configStore({
+        musicList: {
+            loading: false, list
+        },
+        trackList: {
+            loading: false, list: null
+        },
+        selectMusicId: 0,
+
+    }
+);
 
 ReactDOM.render(<Provider store={store}>
         <Home /></Provider>,

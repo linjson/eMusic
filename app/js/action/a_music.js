@@ -18,6 +18,14 @@ const action = {
         })
     },
 
+    _listTrack(dispatch, mid){
+        let list = ipc.sendSync(DataEvent.listTrack, {});
+        dispatch({
+            type: DataEvent.listTrack,
+            list
+        })
+    },
+
     addMusic(){
         return (dispatch, state) => {
             ipc.sendSync(DataEvent.addMusic, {name: "新建列表"});
@@ -46,9 +54,53 @@ const action = {
                 this._listMusic(dispatch);
             }
         }
+    },
+
+    selectMusic(mid){
+
+        return (dispatch, state) => {
+            let list = ipc.sendSync(DataEvent.listTrack, {mid});
+            dispatch({
+                type: DataEvent.listTrack,
+                list
+            });
+            dispatch({
+                type: DataEvent.selectMusic,
+                select: mid,
+            });
+        }
+    },
+
+    showTrackDialog({name, max, value, open}){
+        return (d, s) => {
+            d({
+                type: DataEvent.importDialog,
+                dialog: {name, max, value, open}
+            })
+        }
+    },
+
+    importTrack(files, i, mid){
+        return (d, s) => {
+            // const max = files.length;
+            // d({
+            //     type: DataEvent.importDialog,
+            //     dialog: {open: true}
+            // })
+            // files.forEach((n, i) => {
+            //     d({
+            //         type: DataEvent.importDialog,
+            //         dialog: {name: n, max, value: (i + 1), open: true}
+            //     })
+            ipc.send(DataEvent.addTrack, {files, i, mid});
+            // })
+            // d({
+            //     type: DataEvent.importDialog,
+            //     dialog: {open: false}
+            // })
+        }
     }
-
-
 }
+
 
 module.exports = action;

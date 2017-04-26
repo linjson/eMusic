@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 import {
     Subheader, List, ListItem,
     Divider, IconButton, IconMenu,
-    MenuItem, Menu, TextField
+    MenuItem, Menu, TextField,
+    Dialog, LinearProgress
 } from 'material-ui';
 import {connect} from 'react-redux';
-
+const ipc = require('electron').ipcRenderer
+const {OpenFileDialog}=require('../ipc/FileDialog');
 const action = require('./action/a_music');
+import {DataEvent} from '../ipc/DataBaseIPCConfig';
 
 class GroupName extends Component {
 
@@ -90,7 +93,9 @@ class MusicItem extends Component {
     static propTypes = {
         text: React.PropTypes.string,
         data: React.PropTypes.object,
+        selectId: React.PropTypes.number,
         renameMusic: React.PropTypes.func,
+        onItemClick: React.PropTypes.func,
     }
 
     state = {
@@ -134,9 +139,18 @@ class MusicItem extends Component {
 
     }
 
+    itemClick = () => {
+        let {data}=this.props;
+        this.props.onItemClick && this.props.onItemClick(data);
+    }
+
+    importSingle = (id) => {
+        this.props.importSingle && this.props.importSingle(id);
+    }
+
     render() {
         let {edit}=this.state;
-        let {data}=this.props;
+        let {data, selectId}=this.props;
         let v = null;
         if (edit) {
             v = <TextField inputStyle={styles.editInput}
@@ -148,13 +162,17 @@ class MusicItem extends Component {
                            onKeyDown={this.inputKeyDown}
                            onBlur={this.hideInput}/>
         } else {
+            const selectColor = data.id == selectId?{backgroundColor:"#dcdcdc"}:null;
+
+
             const el = <div><ListMenu data={data}
                                       delMusic={this.props.delMusic}
                                       moveDown={this.moveDown}
                                       moveUp={this.moveUp}
+                                      importSingle={this.importSingle}
                                       rename={this.showInput}/>
             </div>;
-            v = <ListItem primaryText={this.props.text} rightIconButton={el}/>;
+            v = <ListItem style={selectColor} primaryText={this.props.text} rightIconButton={el} value={1} onClick={this.itemClick}/>;
         }
 
 
@@ -171,7 +189,11 @@ class MusicList extends Component {
     static propTypes = {
         addMusic: React.PropTypes.func,
         delMusic: React.PropTypes.func,
+        selectMusic: React.PropTypes.func,
         musicList: React.PropTypes.object,
+        importTrack: React.PropTypes.func,
+        sortMusic: React.PropTypes.func,
+        renameMusic: React.PropTypes.func,
     }
 
     addMusic = () => {
@@ -190,26 +212,51 @@ class MusicList extends Component {
         this.props.sortMusic(id, value, orderby)
     }
 
+    itemClick = (data) => {
+        this.props.selectMusic(data.id);
+    }
+    importSingle = (id) => {
+        const files = ipc.sendSync(OpenFileDialog, {mid: id});
+        if (files) {
+            this.props.importTrack(files, 0, id);
+        }
+    }
+
+    componentDidMount() {
+
+        ipc.on(DataEvent.finishTrack, (e, {id}) => {
+            this.props.selectMusic(id);
+        });
+        ipc.on(DataEvent.nextTrack, (e, {files, i, mid}) => {
+            this.props.importTrack(files, i, mid);
+        })
+    }
+
     renderItems() {
-        let {musicList}=this.props;
-        console.log("==>", musicList)
+        let {musicList,selectMusicId}=this.props;
         if (!musicList) {
             return null;
         }
-
         return musicList.list.map(n => {
             return <MusicItem key={n.id}
                               text={n.name}
                               data={n}
+                              selectId={selectMusicId}
                               delMusic={this.delMusic}
                               sortMusic={this.sortMusic}
-                              renameMusic={this.renameMusic}/>
+                              renameMusic={this.renameMusic}
+                              onItemClick={this.itemClick}
+                              importSingle={this.importSingle}
+            />
         });
 
 
     }
 
+
     render() {
+
+
         return (
             <List>
                 <Subheader><GroupName label="全部" iconClassName={"icon_add"} iconClick={this.addMusic}/></Subheader>
@@ -219,20 +266,62 @@ class MusicList extends Component {
     }
 }
 
-const styles = {
-    subheader: {
-        flexDirection: 'row',
-        display: 'flex',
-        alignItems: 'center',
-    },
 
-    subheader_label: {
-        flex: 1,
-    },
-    editInput: {
-        color: '#33aeff',
-        paddingLeft: 15,
-        paddingRight: 15,
+class ImportDialog extends Component {
+    static propTypes = {
+        dialog: React.PropTypes.object,
+    }
+
+    constructor() {
+        super();
+        this.state = {
+            dialog: null,
+        }
+    }
+
+    componentDidMount() {
+
+        let self = this;
+        ipc.on(DataEvent.importDialog, (e, params) => {
+            self.setState({dialog: params});
+        })
+
+    }
+
+
+    render() {
+
+        let {dialog}=this.state;
+
+        if (!dialog) {
+            return null;
+        }
+
+        let {open, max, value, name}=dialog;
+        open = open || false;
+
+        return <Dialog
+            title="正在导入列表"
+            modal={false}
+            open={open}
+            onRequestClose={this.handleClose}
+        >
+            <div>{name}</div>
+            <LinearProgress style={styles.progress} mode="determinate" max={max} value={value}/>
+            <div style={styles.dialogtext}>{value}/{max}</div>
+        </Dialog>
+    }
+}
+
+
+class LeftView extends Component {
+    render() {
+        let ML = connect(mapStateToProps, mapActionToProps)(MusicList);
+        let D = ImportDialog;
+        return <div>
+            <ML />
+            <D />
+        </div>
     }
 }
 
@@ -240,6 +329,7 @@ const styles = {
 function mapStateToProps(state) {
     return {
         musicList: state.musicList,
+        selectMusicId: state.selectMusicId,
     }
 }
 
@@ -257,8 +347,44 @@ function mapActionToProps(dispatch) {
         sortMusic: (id, value, orderby) => {
             dispatch(action.sortMusic(id, value, orderby))
         },
+        selectMusic: (id) => {
+            dispatch(action.selectMusic(id));
+        },
+        importTrack: (files, i, mid) => {
+            dispatch(action.importTrack(files, i, mid));
+        },
+        showTrackDialog: (dialog) => {
+            dispatch(action.showTrackDialog(dialog));
+        }
+
+
     }
 }
 
 
-module.exports = connect(mapStateToProps, mapActionToProps)(MusicList);
+const styles = {
+    subheader: {
+        flexDirection: 'row',
+        display: 'flex',
+        alignItems: 'center',
+    },
+
+    subheader_label: {
+        flex: 1,
+    },
+    editInput: {
+        color: '#33aeff',
+        paddingLeft: 15,
+        paddingRight: 15,
+    },
+    dialogtext: {
+        textAlign: 'right',
+    },
+    progress: {
+        marginTop: 5,
+        marginBottom: 5
+    },
+
+}
+
+module.exports = LeftView;
