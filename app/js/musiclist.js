@@ -222,6 +222,11 @@ class MusicList extends Component {
     }
 
     componentDidMount() {
+        let {musicList}=this.props;
+        if (musicList.list && musicList.list.length != 0) {
+            this.props.selectMusic(musicList.list[0].id);
+        }
+
 
         ipc.on(DataEvent.finishTrack, (e, {id}) => {
             this.props.selectMusic(id);
@@ -355,7 +360,7 @@ function mapActionToProps(dispatch) {
         showTrackDialog: (dialog) => {
             dispatch(action.showTrackDialog(dialog));
         },
-        listMusic:()=>{
+        listMusic: () => {
             dispatch(action.listMusic());
         }
 
