@@ -99,7 +99,18 @@ const action = {
             //     dialog: {open: false}
             // })
         }
-    }
+    },
+    listMusic(){
+        return (d, s) => {
+            let list = ipc.sendSync(DataEvent.listMusic, {});
+            d({
+                type: DataEvent.listMusic,
+                list
+            })
+        }
+
+
+    },
 }
 
 
