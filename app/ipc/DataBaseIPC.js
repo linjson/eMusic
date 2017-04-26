@@ -79,9 +79,12 @@ const DataBaseEventFuncList = [
     {
         eventName: DataEvent.listMusic,
         event: async(e, {}) => {
-            const v = await Musics.findAll({order: [['sort']]});
-            const list = convertListJson(v);
-            e.returnValue = list;
+            // const v = await Musics.findAll({order: [['sort']]});
+            const v=await sequelize.query("select id,name,sort,(select count(1) from tracks where mid=t.id) count from musics t");
+            // const list = convertListJson(v[0]);
+            e.returnValue = v[0];
+
+
         }
     },
     {
@@ -166,6 +169,20 @@ const DataBaseEventFuncList = [
                 ;
             })
 
+        }
+    },
+    {
+        eventName: DataEvent.delTrack,
+        event: async(e, {id}) => {
+            const v = await Tracks.destroy({where: {id}});
+            e.returnValue = v;
+        }
+    },
+    {
+        eventName: DataEvent.moveTrack,
+        event: async(e, {id, mid}) => {
+            const v = await Tracks.update({mid}, {where: {id}});
+            e.returnValue = v;
         }
     },
 

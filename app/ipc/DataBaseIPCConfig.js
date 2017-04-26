@@ -12,6 +12,8 @@ const DataEvent = keymirror({
     importDialog: null,
     nextTrack: null,
     finishTrack:null,
+    delTrack:null,
+    moveTrack:null,
 })
 
 

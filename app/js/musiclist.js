@@ -88,7 +88,6 @@ class ListMenu extends Component {
 
 class MusicItem extends Component {
     static propTypes = {
-        text: React.PropTypes.string,
         data: React.PropTypes.object,
         selectId: React.PropTypes.number,
         renameMusic: React.PropTypes.func,
@@ -161,7 +160,7 @@ class MusicItem extends Component {
                            onBlur={this.hideInput}/>
         } else {
             const selectColor = data.id == selectId ? {backgroundColor: "#dcdcdc"} : null;
-
+            const text = `${data.name}(${data.count})`
 
             const el = <div><ListMenu data={data}
                                       delMusic={this.props.delMusic}
@@ -170,7 +169,7 @@ class MusicItem extends Component {
                                       importFiles={this.importFiles}
                                       rename={this.showInput}/>
             </div>;
-            v = <ListItem style={selectColor} primaryText={this.props.text} rightIconButton={el} value={1}
+            v = <ListItem style={selectColor} primaryText={text} rightIconButton={el}
                           onClick={this.itemClick}/>;
         }
 
@@ -238,7 +237,6 @@ class MusicList extends Component {
         }
         return musicList.list.map(n => {
             return <MusicItem key={n.id}
-                              text={n.name}
                               data={n}
                               selectId={selectMusicId}
                               delMusic={this.delMusic}

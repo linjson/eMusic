@@ -44,7 +44,7 @@ class TrackList extends Component {
 
         return trackList.list.map((n, i) => {
                 return <TableRow key={"track" + i}>
-                    <TableRowColumn style={styles.col_no}>{n.id}</TableRowColumn>
+                    <TableRowColumn style={styles.col_no}>{(i+1)}</TableRowColumn>
                     <TableRowColumn>{n.name}</TableRowColumn>
                     <TableRowColumn style={styles.col_length}>{this.formatDate(n.length)}</TableRowColumn>
                     <TableRowColumn style={styles.col_size}>{n.size}</TableRowColumn>
