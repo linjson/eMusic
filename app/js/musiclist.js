@@ -35,7 +35,7 @@ class ListMenu extends Component {
 
     static propTypes = {
         importMulti: React.PropTypes.func,
-        importSingle: React.PropTypes.func,
+        importFiles: React.PropTypes.func,
         rename: React.PropTypes.func,
         moveUp: React.PropTypes.func,
         moveDown: React.PropTypes.func,
@@ -49,10 +49,8 @@ class ListMenu extends Component {
             return;
         }
         let {id}=this.props.data;
-        if (value == 1) {
-            this.props.importMulti && this.props.importMulti(id);
-        } else if (value == 2) {
-            this.props.importSingle && this.props.importSingle(id);
+        if (value == 2) {
+            this.props.importFiles && this.props.importFiles(id);
         } else if (value == 3) {
             this.props.rename && this.props.rename(id);
         } else if (value == 4) {
@@ -78,8 +76,7 @@ class ListMenu extends Component {
                           desktop={true}
                           onItemTouchTap={this.menuClick}
             >
-                <MenuItem value="1">批量导入</MenuItem>
-                <MenuItem value="2">单个导入</MenuItem>
+                <MenuItem value="2">导入文件</MenuItem>
                 <MenuItem value="3">重命名</MenuItem>
                 <MenuItem value="4">上移</MenuItem>
                 <MenuItem value="5">下移</MenuItem>
@@ -96,6 +93,7 @@ class MusicItem extends Component {
         selectId: React.PropTypes.number,
         renameMusic: React.PropTypes.func,
         onItemClick: React.PropTypes.func,
+        importFiles: React.PropTypes.func,
     }
 
     state = {
@@ -144,8 +142,8 @@ class MusicItem extends Component {
         this.props.onItemClick && this.props.onItemClick(data);
     }
 
-    importSingle = (id) => {
-        this.props.importSingle && this.props.importSingle(id);
+    importFiles = (id) => {
+        this.props.importFiles && this.props.importFiles(id);
     }
 
     render() {
@@ -162,17 +160,18 @@ class MusicItem extends Component {
                            onKeyDown={this.inputKeyDown}
                            onBlur={this.hideInput}/>
         } else {
-            const selectColor = data.id == selectId?{backgroundColor:"#dcdcdc"}:null;
+            const selectColor = data.id == selectId ? {backgroundColor: "#dcdcdc"} : null;
 
 
             const el = <div><ListMenu data={data}
                                       delMusic={this.props.delMusic}
                                       moveDown={this.moveDown}
                                       moveUp={this.moveUp}
-                                      importSingle={this.importSingle}
+                                      importFiles={this.importFiles}
                                       rename={this.showInput}/>
             </div>;
-            v = <ListItem style={selectColor} primaryText={this.props.text} rightIconButton={el} value={1} onClick={this.itemClick}/>;
+            v = <ListItem style={selectColor} primaryText={this.props.text} rightIconButton={el} value={1}
+                          onClick={this.itemClick}/>;
         }
 
 
@@ -215,7 +214,7 @@ class MusicList extends Component {
     itemClick = (data) => {
         this.props.selectMusic(data.id);
     }
-    importSingle = (id) => {
+    importFiles = (id) => {
         const files = ipc.sendSync(OpenFileDialog, {mid: id});
         if (files) {
             this.props.importTrack(files, 0, id);
@@ -233,7 +232,7 @@ class MusicList extends Component {
     }
 
     renderItems() {
-        let {musicList,selectMusicId}=this.props;
+        let {musicList, selectMusicId}=this.props;
         if (!musicList) {
             return null;
         }
@@ -246,7 +245,7 @@ class MusicList extends Component {
                               sortMusic={this.sortMusic}
                               renameMusic={this.renameMusic}
                               onItemClick={this.itemClick}
-                              importSingle={this.importSingle}
+                              importFiles={this.importFiles}
             />
         });
 
