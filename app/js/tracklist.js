@@ -1,39 +1,54 @@
 import React, {Component} from 'react';
 import {
-    Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn
+    Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, IconButton
 } from 'material-ui';
 import {connect} from 'react-redux';
+import action from "./action/a_music";
 
-const action = require('./action/a_music');
 
+class TrackItem extends Component {
+
+    static propTypes = {
+        no: React.PropTypes.number,
+        data: React.PropTypes.object,
+        onPlay: React.PropTypes.func,
+    }
+
+    _onPlay = () => {
+        this.props.onPlay && this.props.onPlay(this.props.data);
+    }
+
+    render() {
+        let {no, data: n} = this.props;
+
+        return <TableRow>
+            <TableRowColumn style={styles.col_no}>{(no + 1)}</TableRowColumn>
+            <TableRowColumn style={styles.col_title}><IconButton
+                iconClassName={"icon_play_item"} onTouchTap={this._onPlay}
+            />{n.name}</TableRowColumn>
+            <TableRowColumn style={styles.col_length}>{formatDate(n.length)}</TableRowColumn>
+            <TableRowColumn style={styles.col_size}>{n.size}</TableRowColumn>
+            <TableRowColumn style={styles.col_times}>{n.times}</TableRowColumn>
+            <TableRowColumn style={styles.col_op}>{n.times}</TableRowColumn>
+        </TableRow>
+    }
+
+}
 
 class TrackList extends Component {
 
     static propTypes = {
         trackList: React.PropTypes.object,
+        selectTrack: React.PropTypes.func,
     }
 
-    fileZero(num) {
-        if (num < 10) {
-            return "0" + num;
-        }
-        return num + "";
-    }
-
-    formatDate(length) {
-        if (!length) {
-            return "";
-        }
-
-        let m = this.fileZero(parseInt(length / 60));
-        let s = this.fileZero(length % 60);
-
-        return `${m}:${s}`;
-
+    play = (data) => {
+        console.log("==>", data);
+        this.props.selectTrack(data);
     }
 
     renderItem() {
-        let {trackList}=this.props;
+        let {trackList} = this.props;
 
         if (!trackList.list || trackList.list.length == 0) {
             return <TableRow>
@@ -43,14 +58,7 @@ class TrackList extends Component {
 
 
         return trackList.list.map((n, i) => {
-                return <TableRow key={"track" + i}>
-                    <TableRowColumn style={styles.col_no}>{(i + 1)}</TableRowColumn>
-                    <TableRowColumn>{n.name}</TableRowColumn>
-                    <TableRowColumn style={styles.col_length}>{this.formatDate(n.length)}</TableRowColumn>
-                    <TableRowColumn style={styles.col_size}>{n.size}</TableRowColumn>
-                    <TableRowColumn style={styles.col_times}>{n.times}</TableRowColumn>
-                    <TableRowColumn style={styles.col_op}>{n.times}</TableRowColumn>
-                </TableRow>;
+                return <TrackItem key={"track" + i} no={i} data={n} onPlay={this.play}/>
             }
         )
     }
@@ -90,10 +98,14 @@ const styles = {
         width: 35,
     },
     col_op: {
-        width: 10
+        width: 10,
     },
     col_times: {
-        width: 10
+        width: 10,
+    },
+    col_title: {
+        alignItems: 'center',
+        display: 'flex',
     },
 }
 
@@ -105,8 +117,31 @@ function mapStateToProps(state, props) {
 }
 
 function mapActionToProps(dispatch, props) {
+    return {
+        selectTrack: (data) => {
+            dispatch(action.selectTrack(data))
+        }
+    }
+}
 
-    return {}
+
+function fileZero(num) {
+    if (num < 10) {
+        return "0" + num;
+    }
+    return num + "";
+}
+
+function formatDate(length) {
+    if (!length) {
+        return "";
+    }
+
+    let m = fileZero(parseInt(length / 60));
+    let s = fileZero(length % 60);
+
+    return `${m}:${s}`;
+
 }
 
 

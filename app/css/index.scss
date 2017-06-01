@@ -4,6 +4,8 @@
   height: 100%;
 }
 
+$topColor:#00BCD4;
+
 .applicationBoby {
   display: flex;
   flex-direction: column;
@@ -21,8 +23,9 @@
 }
 
 .homeBottom {
-  height: 50px;
-  background-color: #ffec7a;
+  height: 60px;
+  display: flex;
+  background-color: white;
 }
 
 .homeLeft{
@@ -54,6 +57,37 @@
   content: "\e5cc";
 }
 
+
+
+.icon_play_item:before{
+  @extend .material-icons;
+  @include icon_button(red);
+  content: "\e037";
+}
+
+.icon_pause:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e034";
+}
+
+.icon_play:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e037";
+}
+
+.icon_previous:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e045";
+}
+
+.icon_next:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e044";
+}
 
 ::-webkit-scrollbar {
   width: 2px;

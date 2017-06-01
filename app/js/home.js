@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
-const AppBar = require('./top');
-const MusicList = require('./musiclist');
-const TrackList = require('./tracklist');
+import AppBar from "./top";
+import MusicList from "./musiclist";
+import TrackList from "./tracklist";
+import TrackPlay from "./trackplay";
 
 class App extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class App extends Component {
                     <div className="homeLeft"><MusicList /></div>
                     <div className="homeRight"><TrackList /></div>
                 </div>
-                <div className="homeBottom"></div>
+                <div className="homeBottom"><TrackPlay /></div>
             </div>
         </MuiThemeProvider>
     }

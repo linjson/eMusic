@@ -39,6 +39,7 @@ var store = configStore({
             loading: false, list: null
         },
         selectMusicId: 0,
+        trackSelect:null,
 
     }
 );

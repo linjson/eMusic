@@ -108,9 +108,15 @@ const action = {
                 list
             })
         }
-
-
     },
+    selectTrack(track){
+        return (d, s) => {
+            d({
+                type: DataEvent.selectTrack,
+                track
+            })
+        }
+    }
 }
 
 

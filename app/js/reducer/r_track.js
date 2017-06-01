@@ -33,8 +33,18 @@ function importTrack(state = {}, action) {
     return state;
 }
 
+function selectTrack(state = {}, action) {
+    if (action.type == DataEvent.selectTrack) {
+        console.log("==>type",action.track)
+        return action.track;
+    }
+
+    return state;
+}
+
 
 module.exports = {
     getTrack,
     importTrack,
+    selectTrack,
 }

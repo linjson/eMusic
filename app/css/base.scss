@@ -44,3 +44,9 @@ html, body {
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+
+@mixin icon_button($color){
+  color:$color;
+  border-radius: 15px;
+  border: 1px $color solid;
+}

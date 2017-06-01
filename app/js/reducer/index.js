@@ -6,10 +6,11 @@ import {combineReducers} from 'redux';
 
 
 const {getMusic, getSelectMusic}=require('./r_music');
-const {getTrack, importTrack}=require('./r_track');
+const {getTrack, importTrack,selectTrack}=require('./r_track');
 module.exports = combineReducers({
     musicList: getMusic,
     selectMusicId: getSelectMusic,
     trackList: getTrack,
-    trackDialog: importTrack
+    trackDialog: importTrack,
+    trackSelect:selectTrack,
 })

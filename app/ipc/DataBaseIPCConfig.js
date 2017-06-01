@@ -14,6 +14,7 @@ const DataEvent = keymirror({
     finishTrack:null,
     delTrack:null,
     moveTrack:null,
+    selectTrack:null,
 })
 
 
