@@ -10,7 +10,8 @@ function getTrack(state = {}, action) {
     if (action.type == DataEvent.listTrack) {
         return {
             loading: false,
-            list: action.list
+            list: action.list,
+            mid:action.mid,
         }
     }
 
@@ -35,8 +36,11 @@ function importTrack(state = {}, action) {
 
 function selectTrack(state = {}, action) {
     if (action.type == DataEvent.selectTrack) {
-        console.log("==>type",action.track)
-        return action.track;
+        return {
+            tracklist: action.tracklist,
+            currentIndex:action.currentIndex,
+            mid:action.mid,
+        };
     }
 
     return state;

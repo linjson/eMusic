@@ -2,7 +2,8 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+const DllLinkPlugin = require('dll-link-webpack-plugin')
 // var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = {
     target: 'electron',
@@ -28,14 +29,23 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new webpack.DllReferencePlugin({
-            context: __dirname,
-            manifest: require('./dist/vendor-manifest.json'),
-            extensions: [".js", ".jsx"]
+        // new webpack.DllReferencePlugin({
+        //     context: __dirname,
+        //     manifest: require('./dist/vendor-manifest.json'),
+        //     extensions: [".js", ".jsx"]
+        // }),
+
+        new HtmlWebpackPlugin({
+            template: './app/index.html',
+            server:'http://localhost:7777',
+            excludeChunks: ['js/index'],
         }),
-        new CopyWebpackPlugin([
-            {from: path.resolve('./app/index.html'), to: 'index.html'},
-        ]),
+        new DllLinkPlugin({
+            config: require('./webpack.dll.config.js')
+        }),
+        // new CopyWebpackPlugin([
+        //     {from: path.resolve('./app/index.html'), to: 'index.html'},
+        // ]),
         // //css压缩
         // new webpack.LoaderOptionsPlugin({
         //     minimize: true,

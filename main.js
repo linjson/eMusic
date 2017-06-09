@@ -3,9 +3,8 @@
  */
 const electron = require('electron');
 // Module to control application life.
-const {app} = electron;
 // Module to create native browser window.
-const {BrowserWindow} = electron;
+const {app,BrowserWindow} = electron;
 //var dialog = require('dialog');
 var path = require('path');
 var url = require('url');
@@ -13,10 +12,8 @@ var fs = require('fs');
 
 const WindowMove = require('./app/ipc/WindowMoveIPC').moveApp;
 const bindFileDialog = require('./app/ipc/FileDialog').bindFileDialog;
-const {DataBaseInit}=require('./app/ipc/DataBaseIPC');
+const {DataBaseInit} = require('./app/ipc/DataBaseIPC');
 // var electronCompile=require('electron-compile');
-// 给我们的服务器发送异常报告。
-//require('crash-reporter').start();
 
 // 保持一个对于 window 对象的全局引用，不然，当 JavaScript 被 GC，
 // window 会被自动地关闭
@@ -60,23 +57,29 @@ app.on('ready', function () {
         height: 600,
         frame: true,
         resizable: true,
-        'web-preferences': {
-            'plugins': true
-        },
+        // 'web-preferences': {
+        //     'plugins': true
+        // },
         titleBarStyle: 'hidden',
+        webPreferences:{
+            webaudio:true,
+        },
     }
 
 
-    // var targetPath = path.resolve(__dirname, 'dist', 'index.html');
-    // var targetUrl = url.format({
-    //     protocol: 'file',
-    //     pathname: targetPath,
-    //     slashes: true,
-    //     query: {
-    //     }
-    // });
+    var targetPath = path.resolve(__dirname,'dist','index.html');
+    var targetUrl = url.format({
+        protocol: 'file',
+        pathname: targetPath,
+        slashes: true,
+        query: {
+        }
+    });
 
-    var targetUrl = "http://localhost:7777/app/index.html";
+    // var targetUrl = "http://localhost:7777/app/index.html";
+
+
+    // var targetUrl="http://www.baidu.com";
 
 
     // 创建浏览器窗口。
@@ -102,4 +105,3 @@ app.on('ready', function () {
 
 
 });
-

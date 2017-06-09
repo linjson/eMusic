@@ -62,7 +62,8 @@ const action = {
             let list = ipc.sendSync(DataEvent.listTrack, {mid});
             dispatch({
                 type: DataEvent.listTrack,
-                list
+                list,
+                mid
             });
             dispatch({
                 type: DataEvent.selectMusic,
@@ -109,11 +110,13 @@ const action = {
             })
         }
     },
-    selectTrack(track){
+    selectTrack(tracklist,currentIndex,mid){
         return (d, s) => {
             d({
                 type: DataEvent.selectTrack,
-                track
+                tracklist,
+                currentIndex,
+                mid
             })
         }
     }

@@ -6,7 +6,7 @@ import {
     Dialog, LinearProgress
 } from 'material-ui';
 import {connect} from 'react-redux';
-const ipc = require('electron').ipcRenderer
+const ipc = require('electron').ipcRenderer;
 const {OpenFileDialog}=require('../ipc/FileDialog');
 const action = require('./action/a_music');
 import {DataEvent} from '../ipc/DataBaseIPCConfig';

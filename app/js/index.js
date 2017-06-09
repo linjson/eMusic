@@ -36,13 +36,14 @@ var store = configStore({
             loading: false, list
         },
         trackList: {
-            loading: false, list: null
+            loading: false, list: null, mid: -1,
         },
         selectMusicId: 0,
-        trackSelect:null,
+        trackSelect: null,
 
     }
-);
+    )
+;
 
 ReactDOM.render(<Provider store={store}>
         <Home /></Provider>,

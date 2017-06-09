@@ -4,7 +4,7 @@ import {
 } from 'material-ui';
 import {connect} from 'react-redux';
 import action from "./action/a_music";
-
+import {formatDate} from "./utils";
 
 class TrackItem extends Component {
 
@@ -12,16 +12,18 @@ class TrackItem extends Component {
         no: React.PropTypes.number,
         data: React.PropTypes.object,
         onPlay: React.PropTypes.func,
+        isCurrentPlay: React.PropTypes.bool,
     }
 
     _onPlay = () => {
-        this.props.onPlay && this.props.onPlay(this.props.data);
+        this.props.onPlay && this.props.onPlay(this.props.data, this.props.no);
     }
 
     render() {
-        let {no, data: n} = this.props;
-
+        let {no, data: n, isCurrentPlay} = this.props;
+        let color = isCurrentPlay ? {backgroundColor: '#00BCD4'} : {};
         return <TableRow>
+            <TableRowColumn style={{...styles.col_current, ...color}}></TableRowColumn>
             <TableRowColumn style={styles.col_no}>{(no + 1)}</TableRowColumn>
             <TableRowColumn style={styles.col_title}><IconButton
                 iconClassName={"icon_play_item"} onTouchTap={this._onPlay}
@@ -40,25 +42,30 @@ class TrackList extends Component {
     static propTypes = {
         trackList: React.PropTypes.object,
         selectTrack: React.PropTypes.func,
+        trackSelect: React.PropTypes.object,
     }
 
-    play = (data) => {
-        console.log("==>", data);
-        this.props.selectTrack(data);
+    play = (data, no) => {
+        this.props.selectTrack(this.props.trackList.list, no, this.props.trackList.mid);
     }
 
-    renderItem() {
-        let {trackList} = this.props;
+    renderItems() {
+        let {trackList, trackSelect} = this.props;
 
         if (!trackList.list || trackList.list.length == 0) {
             return <TableRow>
-                <TableRowColumn colSpan={5} style={{textAlign: 'center'}}>暂无曲目</TableRowColumn>
+                <TableRowColumn colSpan={6} style={{textAlign: 'center'}}>暂无曲目</TableRowColumn>
             </TableRow>;
         }
 
+        let currentIndex = -1;
+        if (trackSelect && trackSelect.mid == trackList.mid) {
+
+            currentIndex = trackSelect.currentIndex;
+        }
 
         return trackList.list.map((n, i) => {
-                return <TrackItem key={"track" + i} no={i} data={n} onPlay={this.play}/>
+                return <TrackItem key={"track" + i} no={i} data={n} onPlay={this.play} isCurrentPlay={i == currentIndex}/>
             }
         )
     }
@@ -71,6 +78,7 @@ class TrackList extends Component {
                 selectable={true}>
                 <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                     <TableRow>
+                        <TableHeaderColumn style={styles.col_current}></TableHeaderColumn>
                         <TableHeaderColumn style={styles.col_no}>序号</TableHeaderColumn>
                         <TableHeaderColumn>曲目</TableHeaderColumn>
                         <TableHeaderColumn style={styles.col_length}>时长</TableHeaderColumn>
@@ -80,7 +88,7 @@ class TrackList extends Component {
                     </TableRow>
                 </TableHeader>
                 <TableBody displayRowCheckbox={false}>
-                    {this.renderItem()}
+                    {this.renderItems()}
                 </TableBody>
             </Table>
         );
@@ -88,6 +96,10 @@ class TrackList extends Component {
 }
 
 const styles = {
+    col_current: {
+        width: 2,
+        padding: 0,
+    },
     col_no: {
         width: 10,
     },
@@ -113,35 +125,16 @@ const styles = {
 function mapStateToProps(state, props) {
     return {
         trackList: state.trackList,
+        trackSelect: state.trackSelect,
     }
 }
 
 function mapActionToProps(dispatch, props) {
     return {
-        selectTrack: (data) => {
-            dispatch(action.selectTrack(data))
+        selectTrack: (list, index, mid) => {
+            dispatch(action.selectTrack(list, index, mid))
         }
     }
-}
-
-
-function fileZero(num) {
-    if (num < 10) {
-        return "0" + num;
-    }
-    return num + "";
-}
-
-function formatDate(length) {
-    if (!length) {
-        return "";
-    }
-
-    let m = fileZero(parseInt(length / 60));
-    let s = fileZero(length % 60);
-
-    return `${m}:${s}`;
-
 }
 
 

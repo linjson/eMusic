@@ -26,6 +26,7 @@ $topColor:#00BCD4;
   height: 60px;
   display: flex;
   background-color: white;
+  border-top: 1px solid $topColor;
 }
 
 .homeLeft{
@@ -87,6 +88,18 @@ $topColor:#00BCD4;
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e044";
+}
+
+.icon_volume_on:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e050";
+}
+
+.icon_volume_off:before{
+  @extend .material-icons;
+  @include icon_button($topColor);
+  content: "\e04f";
 }
 
 ::-webkit-scrollbar {

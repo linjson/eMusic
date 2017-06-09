@@ -13,7 +13,10 @@ function bindFileDialog() {
         dialog.showOpenDialog({
             properties: ['openFile', 'openDirectory', 'multiSelections']
         }, function (files) {
-
+            if(!files){
+                event.returnValue=[];
+                return;
+            }
             event.returnValue = parseFiles(files);
         })
     })
@@ -50,52 +53,6 @@ function parseFiles(files) {
     })
     return list;
 
-    //
-    // let params = {open: true, max: list.length, value: 0};
-    // event.sender.send(DataEvent.importDialog, params);
-    //
-    // for (let i in list) {
-    //     let n = list[i];
-    //     const tags = taglib.readTagsSync(n);
-    //     console.log("==>", tags)
-    //     params.value = i + 1;
-    //     params.name = n;
-    //     event.sender.send(DataEvent.importDialog, params);
-    //
-    //     const m = {
-    //         name: path.basename(n, ".mp3"),
-    //         path: n,
-    //         length: tags.length,
-    //         size: filesize(fs.statSync(n).size),
-    //         mid,
-    //
-    //     }
-    //     await _dbOperate.addTrackFromFile(m);
-    //     console.log("==>", n)
-    // }
-
-    // list.forEach((n, i) => {
-    //     const tags = taglib.readTagsSync(n);
-    //     console.log("==>", tags)
-    //     params.value = i + 1;
-    //     params.name = n;
-    //     event.sender.send(DataEvent.importDialog, params);
-    //
-    //     const m = {
-    //         name: path.basename(n, ".mp3"),
-    //         path: n,
-    //         length: tags.length,
-    //         size: filesize(fs.statSync(n).size),
-    //         mid,
-    //
-    //     }
-    //     _dbOperate.addTrackFromFile(m);
-    //     console.log("==>", m)
-    // })
-
-    // params.open = false;
-    // event.sender.send(DataEvent.importDialog, params);
-    // event.returnValue = true;
 }
 
 
