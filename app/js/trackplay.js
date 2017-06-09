@@ -147,7 +147,9 @@ class TrackPlay extends Component {
         let totalLength = 1;
         let name = "";
         let playicon = "icon_play";
+        let sliderEnabled = true;
         if (this._hasList()) {
+            sliderEnabled = false;
             const {tracklist, currentIndex} = this.props.trackSelect;
             let audioUrl = tracklist[currentIndex].path;
             totalLength = tracklist[currentIndex].length;
@@ -163,14 +165,14 @@ class TrackPlay extends Component {
         let soundicon = this.state.silent ? "icon_volume_off" : "icon_volume_on";
         return (
             <div style={styles.controller}>
-
-                <IconButton style={styles.iconButton} iconClassName={"icon_previous"} onTouchTap={this._previousMusic}/>
-                <IconButton style={styles.iconButton} iconClassName={playicon} onTouchTap={this._startMusic}/>
-                <IconButton style={styles.iconButton} iconClassName={"icon_next"} onTouchTap={this._nextMusic}/>
+                <IconButton iconClassName={"icon_previous"} onTouchTap={this._previousMusic}/>
+                <IconButton iconClassName={playicon} onTouchTap={this._startMusic}/>
+                <IconButton iconClassName={"icon_next"} onTouchTap={this._nextMusic}/>
                 <div style={styles.message}>
                     <div style={styles.title}>{name}</div>
                     <div style={{flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                         <Slider style={{flex: 1, marginRight: 15,}} sliderStyle={{margin: 0}}
+                                disabled={sliderEnabled}
                                 min={0}
                                 max={totalLength}
                                 value={this.state.durationLength}
@@ -183,7 +185,7 @@ class TrackPlay extends Component {
                 </div>
                 <IconButton style={styles.iconButton} iconClassName={soundicon}
                             onTouchTap={this._onVolumeSilent}/>
-                <Slider style={{width: 100, ...styles.iconButton}} sliderStyle={{margin: 0}} min={0} max={1} step={0.01}
+                <Slider style={{width: 100}} sliderStyle={{margin: 0}}
                         onChange={this._onVolumeChange}
                         disableFocusRipple={true} defaultValue={this.props.volume}
                 ></Slider>
@@ -201,7 +203,7 @@ const styles = {
     controller: {
         display: 'flex',
         flex: 1,
-        // alignItems: 'center',
+        alignItems: 'center',
         paddingLeft: 10,
         paddingRight: 10,
     },
@@ -210,10 +212,7 @@ const styles = {
         flex: 1,
         flexDirection: 'column',
         display: 'flex',
-    },
-
-    iconButton: {
-        alignSelf: 'center',
+        alignSelf:'stretch'
     },
     title: {
         position: 'absolute',
