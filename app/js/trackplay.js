@@ -16,7 +16,7 @@ class TrackPlay extends Component {
     }
 
     state = {
-        play: false,
+        play: true,
         durationTime: "00:00",
         durationLength: 0,
         silent: false,
@@ -42,9 +42,9 @@ class TrackPlay extends Component {
 
 
         if (play) {
-            audio.play();
-        } else {
             audio.pause();
+        } else {
+            audio.play();
         }
 
         this.setState({play: !play});
@@ -146,7 +146,7 @@ class TrackPlay extends Component {
         let totalTime;
         let totalLength = 1;
         let name = "";
-
+        let playicon = "icon_play";
         if (this._hasList()) {
             const {tracklist, currentIndex} = this.props.trackSelect;
             let audioUrl = tracklist[currentIndex].path;
@@ -156,10 +156,10 @@ class TrackPlay extends Component {
             audio = <audio ref={"audio"} src={audioUrl} autoPlay onTimeUpdate={this._onPlaying}
                            onEnded={this._audioEnd}
             />;
-
+            playicon = this.state.play ? "icon_pause" : "icon_play";
         }
 
-        let playicon = this.state.play ? "icon_pause" : "icon_play";
+
         let soundicon = this.state.silent ? "icon_volume_off" : "icon_volume_on";
         return (
             <div style={styles.controller}>
