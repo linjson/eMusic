@@ -31,7 +31,7 @@ class GroupName extends Component {
     }
 }
 
-class ListMenu extends Component {
+class MusicMenu extends Component {
 
     static propTypes = {
         importMulti: React.PropTypes.func,
@@ -162,12 +162,12 @@ class MusicItem extends Component {
             const selectColor = data.id == selectId ? {backgroundColor: "#dcdcdc"} : null;
             const text = `${data.name}(${data.count})`
 
-            const el = <div><ListMenu data={data}
-                                      delMusic={this.props.delMusic}
-                                      moveDown={this.moveDown}
-                                      moveUp={this.moveUp}
-                                      importFiles={this.importFiles}
-                                      rename={this.showInput}/>
+            const el = <div><MusicMenu data={data}
+                                       delMusic={this.props.delMusic}
+                                       moveDown={this.moveDown}
+                                       moveUp={this.moveUp}
+                                       importFiles={this.importFiles}
+                                       rename={this.showInput}/>
             </div>;
             v = <ListItem style={selectColor} primaryText={text} rightIconButton={el}
                           onClick={this.itemClick}/>;
@@ -308,7 +308,7 @@ class ImportDialog extends Component {
             title="正在导入列表"
             modal={false}
             open={open}
-            onRequestClose={this.handleClose}
+            onRequestClose={this._handleClose}
         >
             <div>{name}</div>
             <LinearProgress style={styles.progress} mode="determinate" max={max} value={value}/>

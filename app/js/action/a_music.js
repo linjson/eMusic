@@ -3,7 +3,7 @@
  */
 
 import {DataEvent} from '../../ipc/DataBaseIPCConfig';
-
+import {DeleteFile} from '../../ipc/FileDialog';
 
 const ipc = require('electron').ipcRenderer
 
@@ -22,7 +22,8 @@ const action = {
         let list = ipc.sendSync(DataEvent.listTrack, {});
         dispatch({
             type: DataEvent.listTrack,
-            list
+            list,
+            mid,
         })
     },
 
@@ -110,13 +111,42 @@ const action = {
             })
         }
     },
-    selectTrack(tracklist,currentIndex,mid){
+    selectTrack(tracklist, currentIndex, mid){
         return (d, s) => {
             d({
                 type: DataEvent.selectTrack,
                 tracklist,
                 currentIndex,
                 mid
+            })
+        }
+    },
+    delTrack(data, removeFile){
+        return (d, s) => {
+            let {mid} = data;
+            ipc.sendSync(DataEvent.delTrack, {id: data.id});
+            if (removeFile) {
+                ipc.send(DeleteFile, {path: data.path});
+            }
+            let list = ipc.sendSync(DataEvent.listTrack, {mid});
+            this._listMusic(d);
+            d({
+                type: DataEvent.listTrack,
+                list,
+                mid,
+            })
+        }
+    },
+
+    moveTrack(data,mid){
+        return (d, s) => {
+            ipc.sendSync(DataEvent.moveTrack, {id: data.id,mid});
+            let list = ipc.sendSync(DataEvent.listTrack, {mid:data.mid});
+            this._listMusic(d);
+            d({
+                type: DataEvent.listTrack,
+                list,
+                mid:data.mid,
             })
         }
     }

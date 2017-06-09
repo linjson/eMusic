@@ -4,6 +4,7 @@
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
 const OpenFileDialog = "OpenFileDialog";
+const DeleteFile = "DeleteFile";
 const fs = require('fs');
 const path = require('path');
 function bindFileDialog() {
@@ -13,12 +14,23 @@ function bindFileDialog() {
         dialog.showOpenDialog({
             properties: ['openFile', 'openDirectory', 'multiSelections']
         }, function (files) {
-            if(!files){
-                event.returnValue=[];
+            if (!files) {
+                event.returnValue = [];
                 return;
             }
             event.returnValue = parseFiles(files);
         })
+    })
+
+    ipc.on(DeleteFile, function (event, {path}) {
+
+        fs.exists(path, (v) => {
+            if (v) {
+                fs.unlink(path);
+            }
+        });
+
+        event.returnValue = null;
     })
 
 }
@@ -59,4 +71,5 @@ function parseFiles(files) {
 module.exports = {
     bindFileDialog,
     OpenFileDialog,
+    DeleteFile,
 }
