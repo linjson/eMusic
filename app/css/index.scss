@@ -44,10 +44,6 @@ $topColor:#00BCD4;
   display: flex;
 }
 
-.test{
-  background-color: red;
-}
-
 .icon_add:before {
   @extend .material-icons;
   content: "\e145";
