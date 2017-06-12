@@ -49,8 +49,10 @@ class TrackMenu extends Component {
         if (!musicList.list) {
             return;
         }
+        const {data} = this.props;
+        const list=musicList.list.filter(n=>n.id!=data.mid);
 
-        return musicList.list.map((n) => {
+        return list.map((n) => {
             return <MenuItem value={n.id} onTouchTap={() => {
                 this.subMeunClick(n)
             }}>{n.name}</MenuItem>
@@ -195,7 +197,7 @@ class TrackList extends Component {
     }
 
     _play = (data, no) => {
-        this.props.selectTrack(this.props.trackList.list, no, this.props.trackList.mid);
+        this.props.selectTrack(this.props.trackList.list, no, data.id);
     }
 
     _onItemDelete = (n) => {
@@ -219,10 +221,9 @@ class TrackList extends Component {
             </TableRow>;
         }
 
-        let currentIndex = -1;
-        if (trackSelect && trackSelect.mid == trackList.mid) {
-
-            currentIndex = trackSelect.currentIndex;
+        let trackId = -1;
+        if (trackSelect) {
+            trackId = trackSelect.trackId;
         }
 
         return trackList.list.map((n, i) => {
@@ -230,7 +231,7 @@ class TrackList extends Component {
                                   no={i}
                                   data={n}
                                   onPlay={this._play}
-                                  isCurrentPlay={i == currentIndex}
+                                  isCurrentPlay={n.id == trackId}
                                   onDeleteTrack={this._onItemDelete}
                                   onDeleteFile={this._onItemFileDelete}
                                   onMoveTrack={this._onItemMove}
@@ -327,8 +328,8 @@ function mapStateToMenuProps(state, props) {
 
 function mapActionToProps(dispatch, props) {
     return {
-        selectTrack: (list, index, mid) => {
-            dispatch(action.selectTrack(list, index, mid))
+        selectTrack: (list, index, trackId) => {
+            dispatch(action.selectTrack(list, index, trackId))
         },
         delTrack: (data, removeFile) => {
             dispatch(action.delTrack(data, removeFile))

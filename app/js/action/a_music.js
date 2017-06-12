@@ -23,7 +23,6 @@ const action = {
         dispatch({
             type: DataEvent.listTrack,
             list,
-            mid,
         })
     },
 
@@ -64,7 +63,6 @@ const action = {
             dispatch({
                 type: DataEvent.listTrack,
                 list,
-                mid
             });
             dispatch({
                 type: DataEvent.selectMusic,
@@ -111,13 +109,13 @@ const action = {
             })
         }
     },
-    selectTrack(tracklist, currentIndex, mid){
+    selectTrack(tracklist, currentIndex, trackId){
         return (d, s) => {
             d({
                 type: DataEvent.selectTrack,
                 tracklist,
                 currentIndex,
-                mid
+                trackId
             })
         }
     },
@@ -133,7 +131,6 @@ const action = {
             d({
                 type: DataEvent.listTrack,
                 list,
-                mid,
             })
         }
     },
@@ -146,7 +143,6 @@ const action = {
             d({
                 type: DataEvent.listTrack,
                 list,
-                mid:data.mid,
             })
         }
     }

@@ -36,7 +36,7 @@ var store = configStore({
             loading: false, list
         },
         trackList: {
-            loading: false, list: null, mid: -1,
+            loading: false, list: null, trackId: -1,
         },
         selectMusicId: 0,
         trackSelect: null,
