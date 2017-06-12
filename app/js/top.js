@@ -5,12 +5,18 @@
 
 import React, {Component} from 'react';
 import {AppBar, TextField, IconButton} from 'material-ui';
-
-const {StartMove, OnMove}=require('../ipc/WindowMoveIPC');
-const ipc = require('electron').ipcRenderer
-
+import {OnMove, StartMove} from "../ipc/WindowMoveIPC";
+import {ipcRenderer as ipc} from "electron";
+import action from './action/a_music';
+import {connect} from 'react-redux';
 
 class AppTop extends Component {
+
+    static propTypes = {
+        searchTrack: React.PropTypes.func,
+        selectMusicId: React.PropTypes.number,
+    }
+
     constructor(props) {
         super(props);
         this.startMove = false;
@@ -36,6 +42,14 @@ class AppTop extends Component {
     mouseUp = (e) => {
         this.startMove = false;
     }
+    inputKeyDown = (e) => {
+        let {keyCode} = e;
+
+        if (keyCode == 13) {
+            this.props.searchTrack(e.target.value,this.props.selectMusicId);
+        }
+
+    }
 
     createSearch() {
 
@@ -43,6 +57,7 @@ class AppTop extends Component {
                           underlineShow={false}
                           hintText={"搜索"}
                           rowsMax={1}
+                          onKeyDown={this.inputKeyDown}
                           hintStyle={styles.hintStyle}
                           inputStyle={styles.searchStyle}/>;
     }
@@ -62,19 +77,34 @@ class AppTop extends Component {
 }
 
 
-const styles = {
-    searchStyle: {
-        color: 'white',
-        textAlign: 'right',
-        fontSize:15,
-    },
+function mapActionToProps(dispatch, props) {
+    return {
+        searchTrack: (name,mid) => {
+            dispatch(action.searchTrack(name,mid))
+        },
+    }
+}
 
-    hintStyle: {
-        color: 'white',
-        fontSize:15,
-        right:0,
+function mapStateToProps(state, props) {
+    return {
+        selectMusicId:state.selectMusicId
     }
 }
 
 
-module.exports = AppTop;
+const styles = {
+    searchStyle: {
+        color: 'white',
+        textAlign: 'right',
+        fontSize: 15,
+    },
+
+    hintStyle: {
+        color: 'white',
+        fontSize: 15,
+        right: 0,
+    }
+}
+
+
+module.exports = connect(mapStateToProps, mapActionToProps)(AppTop);

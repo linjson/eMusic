@@ -18,7 +18,7 @@ const action = {
         })
     },
 
-    _listTrack(dispatch, mid){
+    _listTrack(dispatch){
         let list = ipc.sendSync(DataEvent.listTrack, {});
         dispatch({
             type: DataEvent.listTrack,
@@ -135,17 +135,29 @@ const action = {
         }
     },
 
-    moveTrack(data,mid){
+    moveTrack(data, mid){
         return (d, s) => {
-            ipc.sendSync(DataEvent.moveTrack, {id: data.id,mid});
-            let list = ipc.sendSync(DataEvent.listTrack, {mid:data.mid});
+            ipc.sendSync(DataEvent.moveTrack, {id: data.id, mid});
+            let list = ipc.sendSync(DataEvent.listTrack, {mid: data.mid});
             this._listMusic(d);
             d({
                 type: DataEvent.listTrack,
                 list,
             })
         }
-    }
+    },
+    searchTrack(name, mid){
+        return (d, s) => {
+            let list = ipc.sendSync(DataEvent.searchTrack, {name, mid});
+            d({
+                type: DataEvent.listTrack,
+                list,
+            })
+            // console.log("==>", v)
+            // _listMusic(d);
+
+        }
+    },
 }
 
 

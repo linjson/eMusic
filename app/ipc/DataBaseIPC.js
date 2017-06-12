@@ -185,6 +185,25 @@ const DataBaseEventFuncList = [
             e.returnValue = v;
         }
     },
+    {
+        eventName: DataEvent.searchTrack,
+        event: async (e, {name, mid}) => {
+
+            const where = name ? {
+                name: {
+                    $like: `%${name}%`,
+                }
+            } : {
+                mid
+            }
+
+            const v = await Tracks.findAll({
+                where
+            });
+            e.returnValue = convertListJson(v);
+
+        }
+    },
 
 ]
 
