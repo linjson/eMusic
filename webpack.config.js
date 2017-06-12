@@ -81,12 +81,12 @@ module.exports = {
             {
                 test: /\.(css)$/,
                 exclude: /^node_modules$/,
-                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader'}),
+                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?importLoaders=1!postcss-loader'}),
             },
             {
                 test: /\.(scss)$/,
                 exclude: /^node_modules$/,
-                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!sass-loader'}),
+                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!postcss-loader!sass-loader'}),
             },
             {
                 test: /\.(jpe?g|png|gif|svg|eot|ttf|woff2|woff)$/i,
@@ -94,6 +94,5 @@ module.exports = {
                 loader: ['url-loader?limit=5000&name=img/[hash:8].[name].[ext]']
             },
         ],
-
     },
 };
