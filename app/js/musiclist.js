@@ -262,7 +262,7 @@ class MusicList extends Component {
 
 
         return (
-            <List>
+            <List style={{backgroundColor:'white'}}>
                 <Subheader><GroupName label="全部" iconClassName={"icon_add"} iconClick={this.addMusic}/></Subheader>
                 {this.renderItems()}
             </List>

@@ -53,7 +53,7 @@ app.on('ready', function () {
 
     //var _ = require("underscore-plus");
     var opt = {
-        width: 800,
+        width: 1000,
         height: 600,
         frame: true,
         resizable: true,

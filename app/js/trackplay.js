@@ -16,8 +16,8 @@ const PlayModel = keymirror({
 });
 
 function* playModel() {
-    while (1) {
-        yield PlayModel.icon_list;
+    while (true) {
+        // yield PlayModel.icon_list;
         yield PlayModel.icon_repeat;
         // yield PlayModel.icon_all_loop;
         yield PlayModel.icon_random;
