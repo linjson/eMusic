@@ -75,7 +75,7 @@ module.exports = {
             // {test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM'},
             {
                 test: /\.(js|jsx)$/,
-                loaders: ['react-hot-loader', 'babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-0'],
+                loaders: ['react-hot-loader', 'babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-0,plugins[]=transform-runtime'],
                 exclude: /node_modules/,
             },
             {
