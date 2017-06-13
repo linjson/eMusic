@@ -204,6 +204,12 @@ const DataBaseEventFuncList = [
 
         }
     },
+    {
+        eventName: DataEvent.increaseTrack,
+        event: (e, {id, times}) => {
+            Tracks.update({times}, {where: {id}});
+        }
+    }
 
 ]
 

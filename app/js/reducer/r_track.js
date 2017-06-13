@@ -11,6 +11,7 @@ function getTrack(state = {}, action) {
         return {
             loading: false,
             list: action.list,
+            sort:action.sort,
         }
     }
 
@@ -39,6 +40,7 @@ function selectTrack(state = {}, action) {
             tracklist: action.tracklist,
             currentIndex:action.currentIndex,
             trackId:action.trackId,
+
         };
     }
 

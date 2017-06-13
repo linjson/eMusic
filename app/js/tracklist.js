@@ -16,6 +16,18 @@ import {
 import {connect} from 'react-redux';
 import action from "./action/a_music";
 import {formatDate} from "./utils";
+import keymirror from "fbjs/lib/keymirror";
+const SORT = keymirror({
+    UP: null,
+    DOWN: null,
+})
+
+function* sort() {
+    while (true) {
+        yield SORT.UP;
+        yield SORT.DOWN;
+    }
+}
 
 class TrackMenu extends Component {
 
@@ -50,7 +62,7 @@ class TrackMenu extends Component {
             return;
         }
         const {data} = this.props;
-        const list=musicList.list.filter(n=>n.id!=data.mid);
+        const list = musicList.list.filter(n => n.id != data.mid);
 
         return list.map((n) => {
             return <MenuItem value={n.id} onTouchTap={() => {
@@ -189,11 +201,17 @@ class TrackList extends Component {
         trackSelect: React.PropTypes.object,
         delTrack: React.PropTypes.func,
         moveTrack: React.PropTypes.func,
+        sortTrack: React.PropTypes.func,
     }
 
     state = {
         ask: false,
         askData: null,
+    }
+
+    constructor(props) {
+        super(props);
+        this.sortState = sort();
     }
 
     _play = (data, no) => {
@@ -249,7 +267,31 @@ class TrackList extends Component {
         this.setState({ask: false, askData: null});
     }
 
+    _trackTimesSort = () => {
+        if (this.props.trackList && this.props.trackList.list) {
+
+            let {sort, list} = this.props.trackList;
+            if (sort) {
+                let n = this.sortState.next();
+                sort = n.value;
+            } else {
+                sort = SORT.DOWN;
+            }
+            this.props.sortTrack(list, sort);
+        }
+    }
+
     render() {
+        let sortTimes="";
+        if(this.props.trackList&&this.props.trackList.sort){
+            let sort=this.props.trackList.sort;
+            if(sort===SORT.UP){
+                sortTimes="↑";
+            }else{
+                sortTimes="↓";
+            }
+        }
+
         return (<div style={{display: 'flex'}}>
                 <Table
                     wrapperStyle={{display: 'flex', flexDirection: 'column', flex: 1,}}
@@ -262,7 +304,9 @@ class TrackList extends Component {
                             <TableHeaderColumn>曲目</TableHeaderColumn>
                             <TableHeaderColumn style={styles.col_length}>时长</TableHeaderColumn>
                             <TableHeaderColumn style={styles.col_size}>大小</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_times}>次数</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.col_times}>
+                                <FlatButton style={styles.btn} onTouchTap={this._trackTimesSort}>次数{sortTimes}</FlatButton>
+                            </TableHeaderColumn>
                             <TableHeaderColumn style={styles.col_op}>操作</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
@@ -303,12 +347,18 @@ const styles = {
         padding: 0,
     },
     col_times: {
-        width: 10,
+        width: 40,
+        paddingHorizontal: 5,
+        textAlign: 'center',
     },
     col_title: {
         alignItems: 'center',
         display: 'flex',
     },
+    btn: {
+        minWidth: 20,
+        width: 40,
+    }
 }
 
 
@@ -336,6 +386,9 @@ function mapActionToProps(dispatch, props) {
         },
         moveTrack: (data, mid) => {
             dispatch(action.moveTrack(data, mid))
+        },
+        sortTrack: (list, sort) => {
+            dispatch(action.sortTrack(list, sort));
         }
 
     }

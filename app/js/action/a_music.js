@@ -111,6 +111,9 @@ const action = {
     },
     selectTrack(tracklist, currentIndex, trackId){
         return (d, s) => {
+            let track = tracklist[currentIndex];
+            track.times++;
+            ipc.send(DataEvent.increaseTrack, {id: track.id, times: track.times});
             d({
                 type: DataEvent.selectTrack,
                 tracklist,
@@ -158,6 +161,23 @@ const action = {
 
         }
     },
+    sortTrack(list, sort){
+        return (d, s) => {
+            list.sort((x, y) => {
+                if (x.times >= y.times) {
+                    return sort === "UP" ? 1 : -1;
+                } else {
+                    return sort === "UP" ? -1 : 1;
+                }
+            });
+
+            d({
+                type: DataEvent.listTrack,
+                list,
+                sort
+            })
+        }
+    }
 }
 
 
