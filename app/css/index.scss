@@ -4,7 +4,7 @@
   height: 100%;
 }
 
-$topColor:#00BCD4;
+$topColor: #00BCD4;
 
 .applicationBoby {
   display: flex;
@@ -29,15 +29,15 @@ $topColor:#00BCD4;
   border-top: 1px solid $topColor;
 }
 
-.homeLeft{
-  width:250px;
+.homeLeft {
+  width: 250px;
   background-color: #F4F4F4;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.homeRight{
-  flex:1;
+.homeRight {
+  flex: 1;
   background-color: #ffffff;
   overflow-y: auto;
   overflow-x: hidden;
@@ -49,62 +49,89 @@ $topColor:#00BCD4;
   content: "\e145";
 }
 
-.icon_chevron_right:before{
+.icon_chevron_right:before {
   @extend .material-icons;
   content: "\e5cc";
 }
 
-
-
-.icon_play_item:before{
+.icon_play_item:before {
   @extend .material-icons;
   @include icon_button(red);
   content: "\e037";
 }
 
-.icon_pause:before{
+.icon_pause:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e034";
 }
 
-.icon_play:before{
+.icon_play:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e037";
 }
 
-.icon_previous:before{
+.icon_previous:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e045";
 }
 
-.icon_next:before{
+.icon_next:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e044";
 }
 
-.icon_volume_on:before{
+.icon_volume_on:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e050";
 }
 
-.icon_volume_off:before{
+.icon_volume_off:before {
   @extend .material-icons;
   @include icon_button($topColor);
   content: "\e04f";
+}
+
+.icon_repeat:before {
+  @extend .material-icons;
+  color: $topColor;
+  content: "\e041";
+}
+
+.icon_loop:before {
+  @extend .material-icons;
+  color: $topColor;
+  content: "\e040";
+}
+
+.icon_random:before {
+  @extend .material-icons;
+  color: $topColor;
+  content: "\e043";
+}
+
+.icon_list:before {
+  @extend .material-icons;
+  color: $topColor;
+  content: "\e03d";
+}
+
+.icon_all_loop:before {
+  @extend .material-icons;
+  color: $topColor;
+  content: "\e066";
 }
 
 ::-webkit-scrollbar {
   width: 2px;
 }
 
-::-webkit-scrollbar-thumb
-{
+::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
   background-color: #00BCD4;
 }
