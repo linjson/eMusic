@@ -250,7 +250,7 @@ class TrackList extends Component {
     }
 
     render() {
-        return (<div>
+        return (<div style={{display: 'flex'}}>
                 <Table
                     wrapperStyle={{display: 'flex', flexDirection: 'column', flex: 1,}}
                     bodyStyle={{flex: 1}}
