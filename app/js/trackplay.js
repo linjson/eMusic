@@ -5,7 +5,25 @@ import {
 import {connect} from 'react-redux';
 import {formatDate} from "./utils";
 import action from "./action/a_music";
+import keymirror from "fbjs/lib/keymirror";
 
+const PlayModel = keymirror({
+    icon_loop: null,
+    icon_repeat: null,
+    icon_all_loop: null,
+    icon_random: null,
+    icon_list: null,
+});
+
+function* playModel() {
+    while (1) {
+        yield PlayModel.icon_list;
+        yield PlayModel.icon_repeat;
+        // yield PlayModel.icon_all_loop;
+        yield PlayModel.icon_random;
+        yield PlayModel.icon_loop;
+    }
+}
 
 class TrackPlay extends Component {
 
@@ -20,11 +38,14 @@ class TrackPlay extends Component {
         durationTime: "00:00",
         durationLength: 0,
         silent: false,
+        playModel: PlayModel.icon_loop,
+        repeat: false,
     }
     sliderValue = 0;
 
     constructor(props) {
         super(props);
+        this.modelList = playModel();
     }
 
     _startMusic = () => {
@@ -128,18 +149,46 @@ class TrackPlay extends Component {
         if (!this.props.trackSelect) {
             return;
         }
-        const {tracklist, currentIndex, mid} = this.props.trackSelect;
+        const {tracklist, currentIndex} = this.props.trackSelect;
+        const {playModel} = this.state;
+
+        if (playModel == PlayModel.icon_random) {
+
+            let m = Math.random();
+            let index = Math.floor(m * tracklist.length);
+            this.props.selectTrack(tracklist, index, tracklist[index].id);
+            return;
+        }
+
         if (flag === "next") {
             let next = currentIndex + 1;
-            next = Math.min(next, tracklist.length - 1);
-            this.props.selectTrack(tracklist, next, mid);
+            if (playModel == PlayModel.icon_loop) {
+                if (next >= tracklist.length) {
+                    next = 0;
+                }
+            } else {
+                next = Math.min(next, tracklist.length - 1);
+            }
+            this.props.selectTrack(tracklist, next, tracklist[next].id);
         } else if (flag === "pre") {
             let pre = currentIndex - 1;
             pre = Math.max(pre, 0);
-            this.props.selectTrack(tracklist, pre, mid);
+            this.props.selectTrack(tracklist, pre, tracklist[pre].id);
         }
     }
 
+    _playModelChange = () => {
+        let v = this.modelList.next();
+        let model = v.value;
+        let repeat = false;
+        switch (model) {
+            case PlayModel.icon_repeat: {
+                repeat = true;
+            }
+        }
+
+        this.setState({playModel: model, repeat});
+    }
 
     render() {
         let audio = null;
@@ -156,6 +205,7 @@ class TrackPlay extends Component {
             name = tracklist[currentIndex].name;
             totalTime = formatDate(totalLength);
             audio = <audio ref={"audio"} src={audioUrl} autoPlay onTimeUpdate={this._onPlaying}
+                           loop={this.state.repeat}
                            onEnded={this._audioEnd}
             />;
             playicon = this.state.play ? "icon_pause" : "icon_play";
@@ -189,6 +239,7 @@ class TrackPlay extends Component {
                         onChange={this._onVolumeChange}
                         disableFocusRipple={true} defaultValue={this.props.volume}
                 ></Slider>
+                <IconButton iconClassName={this.state.playModel} onTouchTap={this._playModelChange}/>
             </div>
         );
     }
@@ -212,7 +263,7 @@ const styles = {
         flex: 1,
         flexDirection: 'column',
         display: 'flex',
-        alignSelf:'stretch'
+        alignSelf: 'stretch'
     },
     title: {
         position: 'absolute',
@@ -230,8 +281,8 @@ function mapStateToProps(state) {
 
 function mapActionToProps(dispatch) {
     return {
-        selectTrack: (list, index, mid) => {
-            dispatch(action.selectTrack(list, index, mid))
+        selectTrack: (list, index, trackId) => {
+            dispatch(action.selectTrack(list, index, trackId))
         }
     }
 }
