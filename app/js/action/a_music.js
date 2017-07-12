@@ -3,7 +3,7 @@
  */
 
 import {DataEvent} from '../../ipc/DataBaseIPCConfig';
-import {DeleteFile} from '../../ipc/FileDialog';
+import {DeleteFile} from '../../ipc/FileDialogIPC';
 
 const ipc = require('electron').ipcRenderer
 
@@ -80,7 +80,7 @@ const action = {
         }
     },
 
-    importTrack(files, i, mid){
+    importTrack(files, mid){
         return (d, s) => {
             // const max = files.length;
             // d({
@@ -92,7 +92,7 @@ const action = {
             //         type: DataEvent.importDialog,
             //         dialog: {name: n, max, value: (i + 1), open: true}
             //     })
-            ipc.send(DataEvent.addTrack, {files, i, mid});
+            ipc.send(DataEvent.addTrack, {files, mid});
             // })
             // d({
             //     type: DataEvent.importDialog,

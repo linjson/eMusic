@@ -14,11 +14,11 @@ function bindFileDialog() {
         dialog.showOpenDialog({
             properties: ['openFile', 'openDirectory', 'multiSelections']
         }, function (files) {
-            if (!files) {
-                event.returnValue = [];
-                return;
+            let temp = null;
+            if (files) {
+                temp = parseFiles(files);
             }
-            event.returnValue = parseFiles(files);
+            event.sender.send(OpenFileDialog, {files: temp,mid});
         })
     })
 

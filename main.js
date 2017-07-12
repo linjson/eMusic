@@ -11,7 +11,7 @@ var url = require('url');
 var fs = require('fs');
 
 const WindowMove = require('./app/ipc/WindowMoveIPC').moveApp;
-const bindFileDialog = require('./app/ipc/FileDialog').bindFileDialog;
+const bindFileDialog = require('./app/ipc/FileDialogIPC').bindFileDialog;
 const {DataBaseInit} = require('./app/ipc/DataBaseIPC');
 // var electronCompile=require('electron-compile');
 

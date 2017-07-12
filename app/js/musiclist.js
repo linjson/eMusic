@@ -7,7 +7,7 @@ import {
 } from 'material-ui';
 import {connect} from 'react-redux';
 const ipc = require('electron').ipcRenderer;
-const {OpenFileDialog} = require('../ipc/FileDialog');
+const {OpenFileDialog} = require('../ipc/FileDialogIPC');
 const action = require('./action/a_music');
 import {DataEvent} from '../ipc/DataBaseIPCConfig';
 
@@ -215,10 +215,7 @@ class MusicList extends Component {
         this.props.selectMusic(data.id);
     }
     importFiles = (id) => {
-        const files = ipc.sendSync(OpenFileDialog, {mid: id});
-        if (files) {
-            this.props.importTrack(files, id);
-        }
+        ipc.send(OpenFileDialog, {mid: id});
     }
 
     componentDidMount() {
@@ -232,6 +229,12 @@ class MusicList extends Component {
             this.props.selectMusic(id);
             this.props.listMusic();
         });
+
+        ipc.on(OpenFileDialog, (e, {files,mid}) => {
+            if (files) {
+                this.props.importTrack(files, mid);
+            }
+        })
     }
 
     renderItems() {
