@@ -2,16 +2,17 @@
  * Created by ljs on 2017/3/30.
  */
 require('sqlite3');
-const _ = require('lodash');
+const {sumBy} = require('./Utils');
 const ipcMain = require('electron').ipcMain
 const {DataEvent} = require('./DataBaseIPCConfig')
 
 const Sequelize = require('sequelize');
 const path = require('path');
 const fs = require('fs');
-const filesize = require("filesize");
+const filesize = require('filesize');
+const os = require('os')
 
-var dbFile = "emusic.sqlite3";
+var dbFile = path.join(os.tmpdir(), "emusic.sqlite3");
 
 var sequelize = new Sequelize(null, null, null, {
     dialect: 'sqlite',
@@ -37,10 +38,14 @@ var Tracks = sequelize.define('tracks', {
     timestamps: false // timestamps will now be true
 });
 
+
 var taglib;
 function DataBaseInit(cb) {
-    taglib = require('taglib2')
-    sequelize.sync().then(cb)
+    taglib = require('taglib2');
+
+    sequelize.sync().then(cb).catch(e => {
+        console.log("==>", e)
+    })
 }
 
 function BindDataBaseEvent(eventList) {
@@ -53,7 +58,7 @@ function BindDataBaseEvent(eventList) {
 }
 
 function convertListJson(list) {
-    return _.map(list, (n) => n.toJSON());
+    return list.map(n => n.toJSON());
 }
 
 
@@ -80,7 +85,7 @@ const DataBaseEventFuncList = [
         eventName: DataEvent.listMusic,
         event: async (e, {}) => {
             // const v = await Musics.findAll({order: [['sort']]});
-            const v = await sequelize.query("select id,name,sort,(select count(1) from tracks where mid=t.id) count from musics t");
+            const v = await sequelize.query("select id,name,sort,(select count(1) from tracks where mid=t.id) count from musics t order by sort");
             // const list = convertListJson(v[0]);
             e.returnValue = v[0];
 
@@ -116,7 +121,8 @@ const DataBaseEventFuncList = [
             if (list.length == 1) {
                 result = list[0].sort + (orderby == "down" ? 1 : -1);
             } else {
-                result = _.sumBy(list, (n) => n.sort) / 2;
+                result = sumBy(list, (n) => n.sort) / 2;
+                console.log("==>", result);
             }
             await Musics.update({sort: result}, {where: {id}});
             e.returnValue = true;

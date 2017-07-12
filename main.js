@@ -67,14 +67,14 @@ app.on('ready', function () {
     }
 
 
-    var targetPath = path.resolve(__dirname,'dist','index.html');
-    var targetUrl = url.format({
-        protocol: 'file',
-        pathname: targetPath,
-        slashes: true,
-        query: {
-        }
-    });
+    // var targetPath = "dist/index.html";
+    // var targetUrl = url.format({
+    //     protocol: 'file',
+    //     pathname: targetPath,
+    //     slashes: true,
+    //     query: {
+    //     }
+    // });
 
     // var targetUrl = "http://localhost:7777/app/index.html";
 
@@ -89,8 +89,8 @@ app.on('ready', function () {
     bindFileDialog();
 
     DataBaseInit(() => {
-        mainWindow.loadURL(targetUrl);
-
+        // mainWindow.loadURL(targetUrl);
+        mainWindow.loadURL(path.join('file://', __dirname, '/dist/index.html'))
         mainWindow.openDevTools();
     });
 

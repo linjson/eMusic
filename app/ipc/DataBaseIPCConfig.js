@@ -1,4 +1,4 @@
-const keymirror = require('fbjs/lib/keymirror')
+const {keymirror} = require('./Utils');
 const DataEvent = keymirror({
     addMusic: null,
     renameMusic: null,
@@ -10,12 +10,12 @@ const DataEvent = keymirror({
     addTrack: null,
     importDialog: null,
     nextTrack: null,
-    finishTrack:null,
-    delTrack:null,
-    moveTrack:null,
-    selectTrack:null,
-    searchTrack:null,
-    increaseTrack:null,
+    finishTrack: null,
+    delTrack: null,
+    moveTrack: null,
+    selectTrack: null,
+    searchTrack: null,
+    increaseTrack: null,
 })
 
 

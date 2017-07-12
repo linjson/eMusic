@@ -1,3 +1,4 @@
 dist
 .dll-link-plugin
-old
+out
+package-lock.json

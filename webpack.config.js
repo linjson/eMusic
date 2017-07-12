@@ -3,7 +3,6 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-const DllLinkPlugin = require('dll-link-webpack-plugin')
 // var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = {
     target: 'electron',
@@ -29,23 +28,20 @@ module.exports = {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        // new webpack.DllReferencePlugin({
-        //     context: __dirname,
-        //     manifest: require('./dist/vendor-manifest.json'),
-        //     extensions: [".js", ".jsx"]
-        // }),
-
+        new webpack.DllReferencePlugin({
+            context: __dirname,
+            manifest: require('./dist/vendor-manifest.json'),
+            extensions: [".js", ".jsx"]
+        }),
         new HtmlWebpackPlugin({
             template: './app/index.html',
             server:'http://localhost:7777',
             excludeChunks: ['js/index'],
         }),
-        new DllLinkPlugin({
-            config: require('./webpack.dll.config.js')
-        }),
-        // new CopyWebpackPlugin([
-        //     {from: path.resolve('./app/index.html'), to: 'index.html'},
-        // ]),
+
+        new CopyWebpackPlugin([
+            {from: path.resolve('./app/index.html'), to: 'index.html'},
+        ]),
         // //css压缩
         // new webpack.LoaderOptionsPlugin({
         //     minimize: true,
@@ -70,7 +66,7 @@ module.exports = {
 
         loaders: [
             //需要在js上加上require("expose-loader?!jquery");才是真正的全局变量window.jQuery
-            {test: require.resolve('jquery'), loader: 'expose-loader?jQuery'},
+            // {test: require.resolve('jquery'), loader: 'expose-loader?jQuery'},
             // {test: require.resolve('react'), loader: 'expose-loader?React'},
             // {test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM'},
             {
@@ -86,12 +82,14 @@ module.exports = {
             {
                 test: /\.(scss)$/,
                 exclude: /^node_modules$/,
-                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!postcss-loader!sass-loader'}),
+                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!postcss-loader!sass-loader',
+                    publicPath:'../'
+                }),
             },
             {
                 test: /\.(jpe?g|png|gif|svg|eot|ttf|woff2|woff)$/i,
                 exclude: /^node_modules$/,
-                loader: ['url-loader?limit=5000&name=img/[hash:8].[name].[ext]']
+                loader: ['url-loader?limit=5000&name=img/[name].[ext]']
             },
         ],
     },
