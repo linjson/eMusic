@@ -7,7 +7,7 @@ import {
 } from 'material-ui';
 import {connect} from 'react-redux';
 const ipc = require('electron').ipcRenderer;
-const {OpenFileDialog}=require('../ipc/FileDialog');
+const {OpenFileDialog} = require('../ipc/FileDialog');
 const action = require('./action/a_music');
 import {DataEvent} from '../ipc/DataBaseIPCConfig';
 
@@ -48,7 +48,7 @@ class MusicMenu extends Component {
         if (!this.props.data) {
             return;
         }
-        let {id}=this.props.data;
+        let {id} = this.props.data;
         if (value == 2) {
             this.props.importFiles && this.props.importFiles(id);
         } else if (value == 3) {
@@ -108,10 +108,10 @@ class MusicItem extends Component {
     }
 
     inputKeyDown = (e) => {
-        let {keyCode}=e;
+        let {keyCode} = e;
 
         if (keyCode == 13) {
-            let {data}=this.props;
+            let {data} = this.props;
             this.props.renameMusic && this.props.renameMusic(data.id, e.target.value)
             this.hideInput();
         } else if (keyCode == 27) {
@@ -122,22 +122,22 @@ class MusicItem extends Component {
     }
 
     moveDown = () => {
-        let {data}=this.props;
+        let {data} = this.props;
 
-        let {id, sort}=data;
+        let {id, sort} = data;
         this.props.sortMusic && this.props.sortMusic(id, sort, "down");
 
     }
 
     moveUp = () => {
-        let {data}=this.props;
-        let {id, sort}=data;
+        let {data} = this.props;
+        let {id, sort} = data;
         this.props.sortMusic && this.props.sortMusic(id, sort, "up");
 
     }
 
     itemClick = () => {
-        let {data}=this.props;
+        let {data} = this.props;
         this.props.onItemClick && this.props.onItemClick(data);
     }
 
@@ -146,8 +146,8 @@ class MusicItem extends Component {
     }
 
     render() {
-        let {edit}=this.state;
-        let {data, selectId}=this.props;
+        let {edit} = this.state;
+        let {data, selectId} = this.props;
         let v = null;
         if (edit) {
             v = <TextField inputStyle={styles.editInput}
@@ -217,12 +217,12 @@ class MusicList extends Component {
     importFiles = (id) => {
         const files = ipc.sendSync(OpenFileDialog, {mid: id});
         if (files) {
-            this.props.importTrack(files, 0, id);
+            this.props.importTrack(files, id);
         }
     }
 
     componentDidMount() {
-        let {musicList}=this.props;
+        let {musicList} = this.props;
         if (musicList.list && musicList.list.length != 0) {
             this.props.selectMusic(musicList.list[0].id);
         }
@@ -232,13 +232,10 @@ class MusicList extends Component {
             this.props.selectMusic(id);
             this.props.listMusic();
         });
-        ipc.on(DataEvent.nextTrack, (e, {files, i, mid}) => {
-            this.props.importTrack(files, i, mid);
-        })
     }
 
     renderItems() {
-        let {musicList, selectMusicId}=this.props;
+        let {musicList, selectMusicId} = this.props;
         if (!musicList) {
             return null;
         }
@@ -262,7 +259,7 @@ class MusicList extends Component {
 
 
         return (
-            <List style={{backgroundColor:'white'}}>
+            <List style={{backgroundColor: 'white'}}>
                 <Subheader><GroupName label="全部" iconClassName={"icon_add"} iconClick={this.addMusic}/></Subheader>
                 {this.renderItems()}
             </List>
@@ -279,7 +276,9 @@ class ImportDialog extends Component {
     constructor() {
         super();
         this.state = {
-            dialog: null,
+            dialog: {
+                open: false,
+            },
         }
     }
 
@@ -295,20 +294,13 @@ class ImportDialog extends Component {
 
     render() {
 
-        let {dialog}=this.state;
+        let {dialog} = this.state;
 
-        if (!dialog) {
-            return null;
-        }
-
-        let {open, max, value, name}=dialog;
-        open = open || false;
-
+        let {open, max, value, name} = dialog;
         return <Dialog
             title="正在导入列表"
             modal={false}
             open={open}
-            onRequestClose={this._handleClose}
         >
             <div>{name}</div>
             <LinearProgress style={styles.progress} mode="determinate" max={max} value={value}/>
@@ -354,8 +346,8 @@ function mapActionToProps(dispatch) {
         selectMusic: (id) => {
             dispatch(action.selectMusic(id));
         },
-        importTrack: (files, i, mid) => {
-            dispatch(action.importTrack(files, i, mid));
+        importTrack: (files, mid) => {
+            dispatch(action.importTrack(files, mid));
         },
         showTrackDialog: (dialog) => {
             dispatch(action.showTrackDialog(dialog));

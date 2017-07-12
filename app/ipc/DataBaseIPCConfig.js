@@ -9,7 +9,7 @@ const DataEvent = keymirror({
     listTrack: null,
     addTrack: null,
     importDialog: null,
-    nextTrack: null,
+    // nextTrack: null,
     finishTrack: null,
     delTrack: null,
     moveTrack: null,

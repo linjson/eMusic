@@ -38,7 +38,6 @@ module.exports = {
             server:'http://localhost:7777',
             excludeChunks: ['js/index'],
         }),
-
         new CopyWebpackPlugin([
             {from: path.resolve('./app/index.html'), to: 'index.html'},
         ]),

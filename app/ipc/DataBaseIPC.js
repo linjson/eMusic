@@ -13,7 +13,7 @@ const filesize = require('filesize');
 const os = require('os')
 
 var dbFile = path.join(os.tmpdir(), "emusic.sqlite3");
-
+var mp3Length = require('mp3Length');
 var sequelize = new Sequelize(null, null, null, {
     dialect: 'sqlite',
     storage: dbFile,
@@ -39,9 +39,7 @@ var Tracks = sequelize.define('tracks', {
 });
 
 
-var taglib;
 function DataBaseInit(cb) {
-    taglib = require('taglib2');
 
     sequelize.sync().then(cb).catch(e => {
         console.log("==>", e)
@@ -122,7 +120,6 @@ const DataBaseEventFuncList = [
                 result = list[0].sort + (orderby == "down" ? 1 : -1);
             } else {
                 result = sumBy(list, (n) => n.sort) / 2;
-                console.log("==>", result);
             }
             await Musics.update({sort: result}, {where: {id}});
             e.returnValue = true;
@@ -145,34 +142,41 @@ const DataBaseEventFuncList = [
     },
     {
         eventName: DataEvent.addTrack,
-        event: (e, {files, i, mid}) => {
+        event: (e, {files, mid}) => {
 
-            if (i == files.length) {
+
+            let list = files.map(file => {
+                return () => new Promise((r, s) => {
+
+                    fs.stat(file, (e, stats) => {
+                        mp3Length(file, function (err, duration) {
+                            if (err) return console.log("解析出错", err.message);
+                            const m = {
+                                name: path.basename(file, ".mp3"),
+                                path: file,
+                                length: duration,
+                                size: filesize(stats.size),
+                                mid,
+                                times: 0
+                            }
+                            Tracks.create(m).then(v => r(m));
+                        });
+                    })
+
+                })
+            })
+
+            let no = 0;
+            let size = list.length;
+            list.reduce((chain, fn) => {
+                return chain.then(() => fn())
+                    .then(t => {
+                        e.sender.send(DataEvent.importDialog, {name: t.path, max: size, value: (no + 1), open: true});
+                        no++;
+                    });
+            }, Promise.resolve()).then(() => {
                 e.sender.send(DataEvent.importDialog, {open: false});
                 e.sender.send(DataEvent.finishTrack, {id: mid});
-                return;
-            }
-
-
-            const file = files[i];
-            e.sender.send(DataEvent.importDialog, {name: file, max: files.length, value: (i + 1), open: true});
-
-            const tags = taglib.readTagsSync(file);
-
-            const m = {
-                name: path.basename(file, ".mp3"),
-                path: file,
-                length: tags.length,
-                size: filesize(fs.statSync(file).size),
-                mid,
-                times: 0
-            }
-            // const v = await Tracks.create(m)
-            Tracks.create(m).then(() => {
-                e.sender.send(DataEvent.nextTrack, {
-                    files, i: (i + 1), mid
-                })
-                ;
             })
 
         }
