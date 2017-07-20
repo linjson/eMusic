@@ -1,11 +1,7 @@
+import {AutoSizer, Column, SortDirection, Table} from "react-virtualized";
 import React, {Component} from 'react';
+
 import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
     IconButton,
     IconMenu,
     MenuItem,
@@ -17,6 +13,9 @@ import {connect} from 'react-redux';
 import action from "./action/a_music";
 import {formatDate} from "./utils";
 import keymirror from "fbjs/lib/keymirror";
+import filesize from "filesize";
+import _ from "lodash";
+
 const SORT = keymirror({
     UP: null,
     DOWN: null,
@@ -79,6 +78,7 @@ class TrackMenu extends Component {
             />
         )
         const moveIcon = <FontIcon className="icon_chevron_right" color={'black'}/>
+        const moveItems = this.renderMenuItems();
         return (<IconMenu iconButtonElement={iconButtonElement}
                           listStyle={{paddingTop: 0, paddingBottom: 0}}
                           targetOrigin={{horizontal: 'left', vertical: 'top'}}
@@ -86,9 +86,9 @@ class TrackMenu extends Component {
                           desktop={true}
                           onItemTouchTap={this.menuClick}
             >
-                <MenuItem value="0"
-                          rightIcon={moveIcon}
-                          menuItems={this.renderMenuItems()}>移动</MenuItem>
+                {moveItems.length > 0 && <MenuItem value="0"
+                                                   rightIcon={moveIcon}
+                                                   menuItems={moveItems}>移动</MenuItem>}
                 <MenuItem value="1">移出列表清单</MenuItem>
                 <MenuItem value="2">删除本地文件</MenuItem>
             </IconMenu>
@@ -98,46 +98,6 @@ class TrackMenu extends Component {
 
 
 const TrackMenuWrapper = connect(mapStateToMenuProps)(TrackMenu);
-
-class TrackItem extends Component {
-
-    static propTypes = {
-        no: React.PropTypes.number,
-        data: React.PropTypes.object,
-        onPlay: React.PropTypes.func,
-        isCurrentPlay: React.PropTypes.bool,
-        onDeleteTrack: React.PropTypes.func,
-        onDeleteFile: React.PropTypes.func,
-        onMoveTrack: React.PropTypes.func,
-    }
-
-    _onPlay = () => {
-        this.props.onPlay && this.props.onPlay(this.props.data, this.props.no);
-    }
-
-    render() {
-        let {no, data: n, isCurrentPlay} = this.props;
-        let color = isCurrentPlay ? {backgroundColor: '#00BCD4'} : {};
-        return <TableRow>
-            <TableRowColumn style={{...styles.col_current, ...color}}></TableRowColumn>
-            <TableRowColumn style={styles.col_no}>{(no + 1)}</TableRowColumn>
-            <TableRowColumn style={styles.col_title}><IconButton
-                iconClassName={"icon_play_item"} onTouchTap={this._onPlay}
-            />{n.name}</TableRowColumn>
-            <TableRowColumn style={styles.col_length}>{formatDate(n.length)}</TableRowColumn>
-            <TableRowColumn style={styles.col_size}>{n.size}</TableRowColumn>
-            <TableRowColumn style={styles.col_times}>{n.times}</TableRowColumn>
-            <TableRowColumn style={styles.col_op_content}>
-                <TrackMenuWrapper data={n}
-                                  onDeleteTrack={this.props.onDeleteTrack}
-                                  onDeleteFile={this.props.onDeleteFile}
-                                  onMoveTrack={this.props.onMoveTrack}
-                />
-            </TableRowColumn>
-        </TableRow>
-    }
-
-}
 
 class AskDeletFileDialog extends Component {
 
@@ -207,6 +167,8 @@ class TrackList extends Component {
     state = {
         ask: false,
         askData: null,
+        sortBy: 'times',
+        sortDirection: SortDirection.ASC,
     }
 
     constructor(props) {
@@ -228,34 +190,6 @@ class TrackList extends Component {
 
     _onItemMove = (data, mid) => {
         this.props.moveTrack(data, mid);
-    }
-
-    _renderItems() {
-        let {trackList, trackSelect} = this.props;
-
-        if (!trackList.list || trackList.list.length == 0) {
-            return <TableRow>
-                <TableRowColumn colSpan={6} style={{textAlign: 'center'}}>暂无曲目</TableRowColumn>
-            </TableRow>;
-        }
-
-        let trackId = -1;
-        if (trackSelect) {
-            trackId = trackSelect.trackId;
-        }
-
-        return trackList.list.map((n, i) => {
-                return <TrackItem key={"track" + i}
-                                  no={i}
-                                  data={n}
-                                  onPlay={this._play}
-                                  isCurrentPlay={n.id == trackId}
-                                  onDeleteTrack={this._onItemDelete}
-                                  onDeleteFile={this._onItemFileDelete}
-                                  onMoveTrack={this._onItemMove}
-                />
-            }
-        )
     }
 
     _askConfirm = (n) => {
@@ -281,39 +215,138 @@ class TrackList extends Component {
         }
     }
 
-    render() {
-        let sortTimes="";
-        if(this.props.trackList&&this.props.trackList.sort){
-            let sort=this.props.trackList.sort;
-            if(sort===SORT.UP){
-                sortTimes="↑";
-            }else{
-                sortTimes="↓";
-            }
+    _noRowsRenderer = () => {
+        return (
+            <div style={{paddingTop: 30, textAlign: 'center'}}>
+                暂无曲目
+            </div>
+        )
+    }
+
+    _rowClassName = ({index}) => {
+        if (index < 0) {
+            return 'trackHeaderRow';
+        }
+        let {trackList, trackSelect} = this.props;
+        let trackId = -1;
+        if (trackSelect) {
+            trackId = trackSelect.trackId;
         }
 
-        return (<div style={{display: 'flex'}}>
-                <Table
-                    wrapperStyle={{display: 'flex', flexDirection: 'column', flex: 1,}}
-                    bodyStyle={{flex: 1}}
-                    selectable={true}>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                        <TableRow>
-                            <TableHeaderColumn style={styles.col_current}></TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_no}>序号</TableHeaderColumn>
-                            <TableHeaderColumn>曲目</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_length}>时长</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_size}>大小</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_times}>
-                                <FlatButton style={styles.btn} onTouchTap={this._trackTimesSort}>次数{sortTimes}</FlatButton>
-                            </TableHeaderColumn>
-                            <TableHeaderColumn style={styles.col_op}>操作</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody displayRowCheckbox={false}>
-                        {this._renderItems()}
-                    </TableBody>
-                </Table>
+        let {list} = trackList;
+        return list[index].trackId == trackId ? 'currentPlayRow' : 'trackItemRow';
+    }
+
+    _sort = ({sortBy, sortDirection}) => {
+        this.setState({sortBy, sortDirection});
+    }
+
+    render() {
+        let {sortBy, sortDirection} = this.state;
+
+        let {list} = this.props.trackList;
+        let trackSize = list ? list.length : 0;
+
+        if (list) {
+            list = _.orderBy(list, [sortBy], [sortDirection.toLowerCase()]);
+        }
+
+        let v = (<div style={{display: 'flex', flex: 1,}}>
+                <AutoSizer>
+                    {({width, height}) => {
+                        return (
+                            <Table
+                                width={width}
+                                height={height - 1}
+                                headerHeight={40}
+                                rowHeight={40}
+                                rowCount={trackSize}
+                                noRowsRenderer={this._noRowsRenderer}
+                                rowClassName={this._rowClassName}
+                                rowGetter={({index}) => list[index]}
+                                sort={this._sort}
+                                sortBy={sortBy}
+                                sortDirection={sortDirection}
+                            >
+                                <Column
+                                    width={50}
+                                    className={'test'}
+                                    dataKey={''}
+                                    disableSort={true}
+                                    cellRenderer={({rowData, rowIndex}) => {
+                                        let tap = () => {
+                                            this._play(rowData, rowIndex);
+                                        }
+                                        return <IconButton iconClassName={"icon_play_item"} onTouchTap={tap}/>
+                                    }}
+                                />
+                                <Column
+                                    label='序号'
+                                    width={50}
+                                    dataKey={'id'}
+                                    disableSort={true}
+                                    className={'trackNoColumns'}
+                                    headerClassName={'trackNoColumns'}
+                                    cellRenderer={({rowIndex}) => {
+                                        return rowIndex + 1;
+                                    }}
+                                />
+                                <Column
+                                    label='曲目'
+                                    dataKey='name'
+                                    width={100}
+                                    disableSort={true}
+                                    flexGrow={1}
+                                />
+                                <Column
+                                    label='时长'
+                                    width={50}
+                                    disableSort={false}
+                                    dataKey='length'
+                                    cellDataGetter={({rowData}) => {
+                                        return formatDate(rowData.length)
+                                    }}
+                                />
+                                <Column
+                                    label='大小'
+                                    width={70}
+                                    dataKey='size'
+                                    disableSort={false}
+                                    cellDataGetter={({rowData}) => {
+                                        return filesize(rowData.size)
+                                    }}
+                                />
+                                <Column
+                                    label='次数'
+                                    width={50}
+                                    disableSort={false}
+                                    dataKey='times'
+                                    className={'trackTimesColumns'}
+                                    headerClassName={'trackTimesColumns'}
+                                />
+                                <Column
+                                    label='操作'
+                                    width={50}
+                                    dataKey={''}
+                                    headerClassName={'trackOpColumns'}
+                                    className={'trackOpColumns'}
+                                    disableSort={true}
+                                    cellRenderer={({rowData}) => {
+                                        return <TrackMenuWrapper data={rowData}
+                                                                 onDeleteTrack={this._onItemDelete}
+                                                                 onDeleteFile={this._onItemFileDelete}
+                                                                 onMoveTrack={this._onItemMove}
+
+                                        />
+
+                                    }}
+                                />
+
+                            </Table>
+                        )
+                    }}
+                </AutoSizer>
+
                 <AskDeletFileDialog open={this.state.ask}
                                     data={this.state.askData}
                                     onConfirm={this._askConfirm}
@@ -321,6 +354,8 @@ class TrackList extends Component {
                 />
             </div>
         );
+
+        return v;
     }
 }
 

@@ -1,7 +1,7 @@
 /**
  * Created by ljs on 2017/3/17.
  */
-
+import 'react-virtualized/styles.css';
 require('../css/index.scss');
 
 
@@ -32,18 +32,18 @@ const ipc = require('electron').ipcRenderer
 import {DataEvent} from '../ipc/DataBaseIPCConfig';
 let list = ipc.sendSync(DataEvent.listMusic, {})
 var store = configStore({
-        musicList: {
-            loading: false, list
-        },
-        trackList: {
-            loading: false, list: null, trackId: -1,
-        },
-        selectMusicId: 0,
-        trackSelect: null,
+    musicList: {
+        loading: false, list
+    },
+    trackList: {
+        loading: false, list: null, trackId: -1,
+    },
+    selectMusicId: 0,
+    trackSelect: null,
 
-    }
-    )
-;
+});
+
+
 
 ReactDOM.render(<Provider store={store}>
         <Home /></Provider>,

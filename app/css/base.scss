@@ -20,11 +20,15 @@ html, body {
   url(../../node_modules/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
 }
 
+div {
+  outline: none;
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 24px; /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -45,8 +49,8 @@ html, body {
   font-feature-settings: 'liga';
 }
 
-@mixin icon_button($color){
-  color:$color;
+@mixin icon_button($color) {
+  color: $color;
   border-radius: 15px;
   border: 1px $color solid;
 }

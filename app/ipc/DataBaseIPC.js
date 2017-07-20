@@ -9,10 +9,9 @@ const {DataEvent} = require('./DataBaseIPCConfig')
 const Sequelize = require('sequelize');
 const path = require('path');
 const fs = require('fs');
-const filesize = require('filesize');
 const os = require('os')
-
 var dbFile = path.join(os.tmpdir(), "emusic.sqlite3");
+console.log("==>",os.tmpdir())
 var mp3Length = require('mp3Length');
 var sequelize = new Sequelize(null, null, null, {
     dialect: 'sqlite',
@@ -31,7 +30,7 @@ var Tracks = sequelize.define('tracks', {
     name: Sequelize.STRING,
     path: Sequelize.STRING,
     length: Sequelize.INTEGER,
-    size: Sequelize.STRING,
+    size: Sequelize.FLOAT,
     times: Sequelize.INTEGER,
     mid: Sequelize.INTEGER,
 }, {
@@ -155,7 +154,7 @@ const DataBaseEventFuncList = [
                                 name: path.basename(file, ".mp3"),
                                 path: file,
                                 length: duration,
-                                size: filesize(stats.size),
+                                size: stats.size,
                                 mid,
                                 times: 0
                             }
