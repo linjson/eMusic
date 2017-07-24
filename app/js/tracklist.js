@@ -241,6 +241,22 @@ class TrackList extends Component {
         this.setState({sortBy, sortDirection});
     }
 
+    _renderPlayItem = ({rowData, rowIndex}) => {
+        let tap = () => {
+            this._play(rowData, rowIndex);
+            console.log("==>",rowData)
+        }
+
+
+        let {trackSelect} = this.props;
+        let trackId = -1;
+        if (trackSelect) {
+            trackId = trackSelect.trackId;
+        }
+        let cls = trackId == rowData.id ? "icon_pause_item" : "icon_play_item";
+        return <IconButton iconClassName={cls} onTouchTap={tap}/>
+    }
+
     render() {
         let {sortBy, sortDirection} = this.state;
 
@@ -273,12 +289,7 @@ class TrackList extends Component {
                                     className={'test'}
                                     dataKey={''}
                                     disableSort={true}
-                                    cellRenderer={({rowData, rowIndex}) => {
-                                        let tap = () => {
-                                            this._play(rowData, rowIndex);
-                                        }
-                                        return <IconButton iconClassName={"icon_play_item"} onTouchTap={tap}/>
-                                    }}
+                                    cellRenderer={this._renderPlayItem}
                                 />
                                 <Column
                                     label='序号'

@@ -2,7 +2,7 @@
  * Created by ljs on 2017/4/12.
  */
 
-import {DataEvent} from '../../ipc/DataBaseIPCConfig';
+import {AppEventName} from '../../ipc/EventNameConfig';
 import {DeleteFile} from '../../ipc/FileDialogIPC';
 
 const ipc = require('electron').ipcRenderer
@@ -11,45 +11,45 @@ const ipc = require('electron').ipcRenderer
 const action = {
 
     _listMusic(dispatch){
-        let list = ipc.sendSync(DataEvent.listMusic, {});
+        let list = ipc.sendSync(AppEventName.listMusic, {});
         dispatch({
-            type: DataEvent.listMusic,
+            type: AppEventName.listMusic,
             list
         })
     },
 
     _listTrack(dispatch){
-        let list = ipc.sendSync(DataEvent.listTrack, {});
+        let list = ipc.sendSync(AppEventName.listTrack, {});
         dispatch({
-            type: DataEvent.listTrack,
+            type: AppEventName.listTrack,
             list,
         })
     },
 
     addMusic(){
         return (dispatch, state) => {
-            ipc.sendSync(DataEvent.addMusic, {name: "新建列表"});
+            ipc.sendSync(AppEventName.addMusic, {name: "新建列表"});
             this._listMusic(dispatch);
         }
     },
 
     delMusic(id){
         return (dispatch, state) => {
-            ipc.sendSync(DataEvent.delMusic, {id});
+            ipc.sendSync(AppEventName.delMusic, {id});
             this._listMusic(dispatch);
         }
     },
 
     renameMusic(id, name){
         return (dispatch, state) => {
-            ipc.sendSync(DataEvent.renameMusic, {id, name});
+            ipc.sendSync(AppEventName.renameMusic, {id, name});
             this._listMusic(dispatch);
         }
     },
 
     sortMusic(id, value, orderby){
         return (dispatch, state) => {
-            const r = ipc.sendSync(DataEvent.sortMusic, {id, value, orderby});
+            const r = ipc.sendSync(AppEventName.sortMusic, {id, value, orderby});
             if (r) {
                 this._listMusic(dispatch);
             }
@@ -59,13 +59,13 @@ const action = {
     selectMusic(mid){
 
         return (dispatch, state) => {
-            let list = ipc.sendSync(DataEvent.listTrack, {mid});
+            let list = ipc.sendSync(AppEventName.listTrack, {mid});
             dispatch({
-                type: DataEvent.listTrack,
+                type: AppEventName.listTrack,
                 list,
             });
             dispatch({
-                type: DataEvent.selectMusic,
+                type: AppEventName.selectMusic,
                 select: mid,
             });
         }
@@ -74,7 +74,7 @@ const action = {
     showTrackDialog({name, max, value, open}){
         return (d, s) => {
             d({
-                type: DataEvent.importDialog,
+                type: AppEventName.importDialog,
                 dialog: {name, max, value, open}
             })
         }
@@ -84,27 +84,27 @@ const action = {
         return (d, s) => {
             // const max = files.length;
             // d({
-            //     type: DataEvent.importDialog,
+            //     type: AppEventName.importDialog,
             //     dialog: {open: true}
             // })
             // files.forEach((n, i) => {
             //     d({
-            //         type: DataEvent.importDialog,
+            //         type: AppEventName.importDialog,
             //         dialog: {name: n, max, value: (i + 1), open: true}
             //     })
-            ipc.send(DataEvent.addTrack, {files, mid});
+            ipc.send(AppEventName.addTrack, {files, mid});
             // })
             // d({
-            //     type: DataEvent.importDialog,
+            //     type: AppEventName.importDialog,
             //     dialog: {open: false}
             // })
         }
     },
     listMusic(){
         return (d, s) => {
-            let list = ipc.sendSync(DataEvent.listMusic, {});
+            let list = ipc.sendSync(AppEventName.listMusic, {});
             d({
-                type: DataEvent.listMusic,
+                type: AppEventName.listMusic,
                 list
             })
         }
@@ -113,9 +113,9 @@ const action = {
         return (d, s) => {
             let track = tracklist[currentIndex];
             track.times++;
-            ipc.send(DataEvent.increaseTrack, {id: track.id, times: track.times});
+            ipc.send(AppEventName.increaseTrack, {id: track.id, times: track.times});
             d({
-                type: DataEvent.selectTrack,
+                type: AppEventName.selectTrack,
                 tracklist,
                 currentIndex,
                 trackId
@@ -125,14 +125,14 @@ const action = {
     delTrack(data, removeFile){
         return (d, s) => {
             let {mid} = data;
-            ipc.sendSync(DataEvent.delTrack, {id: data.id});
+            ipc.sendSync(AppEventName.delTrack, {id: data.id});
             if (removeFile) {
                 ipc.send(DeleteFile, {path: data.path});
             }
-            let list = ipc.sendSync(DataEvent.listTrack, {mid});
+            let list = ipc.sendSync(AppEventName.listTrack, {mid});
             this._listMusic(d);
             d({
-                type: DataEvent.listTrack,
+                type: AppEventName.listTrack,
                 list,
             })
         }
@@ -140,20 +140,20 @@ const action = {
 
     moveTrack(data, mid){
         return (d, s) => {
-            ipc.sendSync(DataEvent.moveTrack, {id: data.id, mid});
-            let list = ipc.sendSync(DataEvent.listTrack, {mid: data.mid});
+            ipc.sendSync(AppEventName.moveTrack, {id: data.id, mid});
+            let list = ipc.sendSync(AppEventName.listTrack, {mid: data.mid});
             this._listMusic(d);
             d({
-                type: DataEvent.listTrack,
+                type: AppEventName.listTrack,
                 list,
             })
         }
     },
     searchTrack(name, mid){
         return (d, s) => {
-            let list = ipc.sendSync(DataEvent.searchTrack, {name, mid});
+            let list = ipc.sendSync(AppEventName.searchTrack, {name, mid});
             d({
-                type: DataEvent.listTrack,
+                type: AppEventName.listTrack,
                 list,
             })
             // console.log("==>", v)
@@ -172,7 +172,7 @@ const action = {
             });
 
             d({
-                type: DataEvent.listTrack,
+                type: AppEventName.listTrack,
                 list,
                 sort
             })

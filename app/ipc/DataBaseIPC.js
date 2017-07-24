@@ -3,15 +3,21 @@
  */
 require('sqlite3');
 const {sumBy} = require('./Utils');
-const ipcMain = require('electron').ipcMain
-const {DataEvent} = require('./DataBaseIPCConfig')
+const electron = require('electron');
+const ipcMain = electron.ipcMain
+const {AppEventName} = require('./EventNameConfig')
 
 const Sequelize = require('sequelize');
 const path = require('path');
 const fs = require('fs');
-const os = require('os')
-var dbFile = path.join(os.tmpdir(), "emusic.sqlite3");
-console.log("==>",os.tmpdir())
+// const os = require('os')
+
+
+
+const userDataDir = (electron.app || electron.remote.app).getPath('userData');
+
+var dbFile = path.join(userDataDir, "emusic.sqlite3");
+console.log("==>", userDataDir)
 var mp3Length = require('mp3Length');
 var sequelize = new Sequelize(null, null, null, {
     dialect: 'sqlite',
@@ -61,7 +67,7 @@ function convertListJson(list) {
 
 const DataBaseEventFuncList = [
     {
-        eventName: DataEvent.addMusic,
+        eventName: AppEventName.addMusic,
         event: async (e, {name, sort}) => {
             if (!sort) {
                 sort = await Musics.max('sort');
@@ -72,14 +78,14 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.renameMusic,
+        eventName: AppEventName.renameMusic,
         event: async (e, {id, name}) => {
             const v = await Musics.update({name}, {where: {id}});
             e.returnValue = v.toString();
         }
     },
     {
-        eventName: DataEvent.listMusic,
+        eventName: AppEventName.listMusic,
         event: async (e, {}) => {
             // const v = await Musics.findAll({order: [['sort']]});
             const v = await sequelize.query("select id,name,sort,(select count(1) from tracks where mid=t.id) count from musics t order by sort");
@@ -90,7 +96,7 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.delMusic,
+        eventName: AppEventName.delMusic,
         event: async (e, {id}) => {
             await Tracks.destroy({where: {mid: id}});
             const v = await Musics.destroy({where: {id}});
@@ -99,7 +105,7 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.sortMusic,
+        eventName: AppEventName.sortMusic,
         event: async (e, {id, value, orderby}) => {
             let sort = orderby == "up" ? {lt: value} : {gt: value};
             let order = orderby == "up" ? [["sort", "desc"]] : null;
@@ -125,7 +131,7 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.listTrack,
+        eventName: AppEventName.listTrack,
         event: async (e, {mid}) => {
             const v = await Tracks.findAll({
                 where: {
@@ -140,7 +146,7 @@ const DataBaseEventFuncList = [
 
     },
     {
-        eventName: DataEvent.addTrack,
+        eventName: AppEventName.addTrack,
         event: (e, {files, mid}) => {
 
 
@@ -170,32 +176,32 @@ const DataBaseEventFuncList = [
             list.reduce((chain, fn) => {
                 return chain.then(() => fn())
                     .then(t => {
-                        e.sender.send(DataEvent.importDialog, {name: t.path, max: size, value: (no + 1), open: true});
+                        e.sender.send(AppEventName.importDialog, {name: t.path, max: size, value: (no + 1), open: true});
                         no++;
                     });
             }, Promise.resolve()).then(() => {
-                e.sender.send(DataEvent.importDialog, {open: false});
-                e.sender.send(DataEvent.finishTrack, {id: mid});
+                e.sender.send(AppEventName.importDialog, {open: false});
+                e.sender.send(AppEventName.finishTrack, {id: mid});
             })
 
         }
     },
     {
-        eventName: DataEvent.delTrack,
+        eventName: AppEventName.delTrack,
         event: async (e, {id}) => {
             const v = await Tracks.destroy({where: {id}});
             e.returnValue = v;
         }
     },
     {
-        eventName: DataEvent.moveTrack,
+        eventName: AppEventName.moveTrack,
         event: async (e, {id, mid}) => {
             const v = await Tracks.update({mid}, {where: {id}});
             e.returnValue = v;
         }
     },
     {
-        eventName: DataEvent.searchTrack,
+        eventName: AppEventName.searchTrack,
         event: async (e, {name, mid}) => {
 
             const where = name ? {
@@ -214,7 +220,7 @@ const DataBaseEventFuncList = [
         }
     },
     {
-        eventName: DataEvent.increaseTrack,
+        eventName: AppEventName.increaseTrack,
         event: (e, {id, times}) => {
             Tracks.update({times}, {where: {id}});
         }

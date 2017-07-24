@@ -1,5 +1,5 @@
 const {keymirror} = require('./Utils');
-const DataEvent = keymirror({
+const AppEventName = keymirror({
     addMusic: null,
     renameMusic: null,
     sortMusic: null,
@@ -16,7 +16,9 @@ const DataEvent = keymirror({
     selectTrack: null,
     searchTrack: null,
     increaseTrack: null,
+    saveConfig:null,
+    getConfig:null,
 })
 
 
-module.exports = {DataEvent};
+module.exports = {AppEventName};

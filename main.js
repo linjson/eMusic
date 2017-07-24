@@ -4,7 +4,7 @@
 const electron = require('electron');
 // Module to control application life.
 // Module to create native browser window.
-const {app,BrowserWindow} = electron;
+const {app, BrowserWindow} = electron;
 //var dialog = require('dialog');
 var path = require('path');
 var url = require('url');
@@ -13,6 +13,7 @@ var fs = require('fs');
 const WindowMove = require('./app/ipc/WindowMoveIPC').moveApp;
 const bindFileDialog = require('./app/ipc/FileDialogIPC').bindFileDialog;
 const {DataBaseInit} = require('./app/ipc/DataBaseIPC');
+require('./app/ipc/AppConfigIPC');
 // var electronCompile=require('electron-compile');
 
 // 保持一个对于 window 对象的全局引用，不然，当 JavaScript 被 GC，
@@ -61,9 +62,9 @@ app.on('ready', function () {
         //     'plugins': true
         // },
         titleBarStyle: 'hidden',
-        webPreferences:{
-            webaudio:true,
-        },
+        // webPreferences: {
+        //     webaudio: true,
+        // },
     }
 
 

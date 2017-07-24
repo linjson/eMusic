@@ -46,7 +46,7 @@ class AppTop extends Component {
         let {keyCode} = e;
 
         if (keyCode == 13) {
-            this.props.searchTrack(e.target.value,this.props.selectMusicId);
+            this.props.searchTrack(e.target.value, this.props.selectMusicId);
         }
 
     }
@@ -59,6 +59,7 @@ class AppTop extends Component {
                           rowsMax={1}
                           onKeyDown={this.inputKeyDown}
                           hintStyle={styles.hintStyle}
+                          style={styles.textFieldStyle}
                           inputStyle={styles.searchStyle}/>;
     }
 
@@ -79,15 +80,15 @@ class AppTop extends Component {
 
 function mapActionToProps(dispatch, props) {
     return {
-        searchTrack: (name,mid) => {
-            dispatch(action.searchTrack(name,mid))
+        searchTrack: (name, mid) => {
+            dispatch(action.searchTrack(name, mid))
         },
     }
 }
 
 function mapStateToProps(state, props) {
     return {
-        selectMusicId:state.selectMusicId
+        selectMusicId: state.selectMusicId
     }
 }
 
@@ -103,7 +104,11 @@ const styles = {
         color: 'white',
         fontSize: 15,
         right: 0,
+    },
+    textFieldStyle: {
+        marginRight: 20,
     }
+
 }
 
 

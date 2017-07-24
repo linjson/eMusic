@@ -3,11 +3,11 @@
  */
 
 
-import {DataEvent} from '../../ipc/DataBaseIPCConfig';
+import {AppEventName} from '../../ipc/EventNameConfig';
 
 function getMusic(state = {}, action) {
 
-    if (action.type == DataEvent.listMusic) {
+    if (action.type == AppEventName.listMusic) {
         return {
             loading: false,
             list: action.list
@@ -20,7 +20,7 @@ function getMusic(state = {}, action) {
 }
 
 function getSelectMusic(state = -1, action) {
-    if (action.type == DataEvent.selectMusic) {
+    if (action.type == AppEventName.selectMusic) {
         return action.select;
     }
 

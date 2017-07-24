@@ -29,8 +29,8 @@ function configStore(initState) {
 
 }
 const ipc = require('electron').ipcRenderer
-import {DataEvent} from '../ipc/DataBaseIPCConfig';
-let list = ipc.sendSync(DataEvent.listMusic, {})
+import {AppEventName} from '../ipc/EventNameConfig';
+let list = ipc.sendSync(AppEventName.listMusic, {})
 var store = configStore({
     musicList: {
         loading: false, list

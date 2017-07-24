@@ -3,11 +3,11 @@
  */
 
 
-import {DataEvent} from '../../ipc/DataBaseIPCConfig';
+import {AppEventName} from '../../ipc/EventNameConfig';
 
 function getTrack(state = {}, action) {
 
-    if (action.type == DataEvent.listTrack) {
+    if (action.type == AppEventName.listTrack) {
         return {
             loading: false,
             list: action.list,
@@ -21,7 +21,7 @@ function getTrack(state = {}, action) {
 }
 
 function importTrack(state = {}, action) {
-    if (action.type == DataEvent.importDialog) {
+    if (action.type == AppEventName.importDialog) {
         let d = action.dialog;
         return {
             name: d.name,
@@ -35,7 +35,7 @@ function importTrack(state = {}, action) {
 }
 
 function selectTrack(state = {}, action) {
-    if (action.type == DataEvent.selectTrack) {
+    if (action.type == AppEventName.selectTrack) {
         return {
             tracklist: action.tracklist,
             currentIndex:action.currentIndex,

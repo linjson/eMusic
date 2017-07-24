@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 const ipc = require('electron').ipcRenderer;
 const {OpenFileDialog} = require('../ipc/FileDialogIPC');
 const action = require('./action/a_music');
-import {DataEvent} from '../ipc/DataBaseIPCConfig';
+import {AppEventName} from '../ipc/EventNameConfig';
 
 class GroupName extends Component {
 
@@ -225,7 +225,7 @@ class MusicList extends Component {
         }
 
 
-        ipc.on(DataEvent.finishTrack, (e, {id}) => {
+        ipc.on(AppEventName.finishTrack, (e, {id}) => {
             this.props.selectMusic(id);
             this.props.listMusic();
         });
@@ -288,7 +288,7 @@ class ImportDialog extends Component {
     componentDidMount() {
 
         let self = this;
-        ipc.on(DataEvent.importDialog, (e, params) => {
+        ipc.on(AppEventName.importDialog, (e, params) => {
             self.setState({dialog: params});
         })
 
