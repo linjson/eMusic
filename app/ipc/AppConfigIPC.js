@@ -22,8 +22,8 @@ const eventList = [
     },
     {
         eventName: AppEventName.getConfig,
-        event: (e, {key, defVal}) => {
-            appConfig.get(key, defVal)
+        event: (e, {key, defValue}) => {
+            e.returnValue = appConfig.get(key, defValue)
         },
     }
 ]
