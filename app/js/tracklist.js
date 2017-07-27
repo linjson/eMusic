@@ -163,6 +163,10 @@ class TrackList extends Component {
     }
 
     _play = (data, no) => {
+        let {trackSelect} = this.props;
+        if (trackSelect && trackSelect.trackId == data.id) {
+            return;
+        }
         this.props.selectTrack(this.props.trackList.list, no, data.id);
     }
 
