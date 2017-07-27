@@ -11,7 +11,7 @@ function getTrack(state = {}, action) {
         return {
             loading: false,
             list: action.list,
-            sort:action.sort,
+            // sort:action.sort,
         }
     }
 

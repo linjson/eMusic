@@ -76,7 +76,7 @@ class MusicMenu extends Component {
                           desktop={true}
                           onItemTouchTap={this.menuClick}
             >
-                <MenuItem value="2">导入文件</MenuItem>
+                <MenuItem value="2">导入文件(夹)</MenuItem>
                 <MenuItem value="3">重命名</MenuItem>
                 <MenuItem value="4">上移</MenuItem>
                 <MenuItem value="5">下移</MenuItem>

@@ -12,21 +12,8 @@ import {
 import {connect} from 'react-redux';
 import action from "./action/a_music";
 import {formatDate} from "./utils";
-import keymirror from "fbjs/lib/keymirror";
 import filesize from "filesize";
 import _ from "lodash";
-
-const SORT = keymirror({
-    UP: null,
-    DOWN: null,
-})
-
-function* sort() {
-    while (true) {
-        yield SORT.UP;
-        yield SORT.DOWN;
-    }
-}
 
 class TrackMenu extends Component {
 
@@ -173,7 +160,6 @@ class TrackList extends Component {
 
     constructor(props) {
         super(props);
-        this.sortState = sort();
     }
 
     _play = (data, no) => {
@@ -201,20 +187,6 @@ class TrackList extends Component {
         this.setState({ask: false, askData: null});
     }
 
-    _trackTimesSort = () => {
-        if (this.props.trackList && this.props.trackList.list) {
-
-            let {sort, list} = this.props.trackList;
-            if (sort) {
-                let n = this.sortState.next();
-                sort = n.value;
-            } else {
-                sort = SORT.DOWN;
-            }
-            this.props.sortTrack(list, sort);
-        }
-    }
-
     _noRowsRenderer = () => {
         return (
             <div style={{paddingTop: 30, textAlign: 'center'}}>
@@ -238,13 +210,18 @@ class TrackList extends Component {
     }
 
     _sort = ({sortBy, sortDirection}) => {
+
+        let {list} = this.props.trackList;
+        if (list) {
+            list = _.orderBy(list, [sortBy], [sortDirection.toLowerCase()]);
+        }
+        this.props.sortTrack(list);
         this.setState({sortBy, sortDirection});
     }
 
     _renderPlayItem = ({rowData, rowIndex}) => {
         let tap = () => {
             this._play(rowData, rowIndex);
-            console.log("==>",rowData)
         }
 
 
@@ -254,6 +231,7 @@ class TrackList extends Component {
             trackId = trackSelect.trackId;
         }
         let cls = trackId == rowData.id ? "icon_pause_item" : "icon_play_item";
+        cls = "icon_play_item";
         return <IconButton iconClassName={cls} onTouchTap={tap}/>
     }
 
@@ -262,10 +240,6 @@ class TrackList extends Component {
 
         let {list} = this.props.trackList;
         let trackSize = list ? list.length : 0;
-
-        if (list) {
-            list = _.orderBy(list, [sortBy], [sortDirection.toLowerCase()]);
-        }
 
         let v = (<div style={{display: 'flex', flex: 1,}}>
                 <AutoSizer>

@@ -163,18 +163,10 @@ const action = {
     },
     sortTrack(list, sort){
         return (d, s) => {
-            list.sort((x, y) => {
-                if (x.times >= y.times) {
-                    return sort === "UP" ? 1 : -1;
-                } else {
-                    return sort === "UP" ? -1 : 1;
-                }
-            });
 
             d({
                 type: AppEventName.listTrack,
                 list,
-                sort
             })
         }
     }
