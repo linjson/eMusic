@@ -5,48 +5,25 @@ import {
 import {connect} from 'react-redux';
 import {formatDate} from "./utils";
 import action from "./action/a_music";
-import keymirror from "fbjs/lib/keymirror";
+import appAction from './action/a_appconfig';
+import {Conf, playModelAction, PlayModel} from './appconfig';
 
-const PlayModel = keymirror({
-    icon_loop: null,
-    icon_repeat: null,
-    icon_all_loop: null,
-    icon_random: null,
-    icon_list: null,
-});
-
-function* playModel() {
-    while (true) {
-        // yield PlayModel.icon_list;
-        yield PlayModel.icon_repeat;
-        // yield PlayModel.icon_all_loop;
-        yield PlayModel.icon_random;
-        yield PlayModel.icon_loop;
-    }
-}
 
 class TrackPlay extends Component {
 
     static propTypes = {
         trackSelect: React.PropTypes.object,
+        appConfig: React.PropTypes.object,
         selectTrack: React.PropTypes.func,
-        volume: React.PropTypes.number,
+        saveConfig: React.PropTypes.func,
     }
 
     state = {
         play: true,
         durationTime: "00:00",
         durationLength: 0,
-        silent: false,
-        playModel: PlayModel.icon_loop,
-        repeat: false,
     }
     sliderValue = 0;
-
-    constructor(props) {
-        super(props);
-        this.modelList = playModel();
-    }
 
     _startMusic = () => {
         if (!this.props.trackSelect) {
@@ -116,6 +93,8 @@ class TrackPlay extends Component {
     }
 
     _onVolumeChange = (e, val) => {
+        this.props.saveConfig(Conf.volume, val);
+
         let audio = this._getAudio();
         if (!audio) {
             return;
@@ -124,19 +103,20 @@ class TrackPlay extends Component {
     }
 
     _onVolumeSilent = () => {
+
+
         let audio = this._getAudio();
         if (!audio) {
             return;
         }
-        let {silent} = this.state;
+        let {silent} = this.props.appConfig;
 
         if (silent) {
             audio.muted = false;
         } else {
             audio.muted = true;
         }
-
-        this.setState({silent: !silent});
+        this.props.saveConfig(Conf.silent, !silent);
 
     }
 
@@ -150,7 +130,7 @@ class TrackPlay extends Component {
             return;
         }
         const {tracklist, currentIndex} = this.props.trackSelect;
-        const {playModel} = this.state;
+        const {playModel} = this.props.appConfig;
 
         if (playModel == PlayModel.icon_random) {
 
@@ -178,16 +158,10 @@ class TrackPlay extends Component {
     }
 
     _playModelChange = () => {
-        let v = this.modelList.next();
+        let v = playModelAction.next();
         let model = v.value;
-        let repeat = false;
-        switch (model) {
-            case PlayModel.icon_repeat: {
-                repeat = true;
-            }
-        }
+        this.props.saveConfig(Conf.playModel, model);
 
-        this.setState({playModel: model, repeat});
     }
 
     render() {
@@ -197,22 +171,24 @@ class TrackPlay extends Component {
         let name = "";
         let playicon = "icon_play";
         let sliderEnabled = true;
+        const {appConfig} = this.props;
         if (this._hasList()) {
             sliderEnabled = false;
             const {tracklist, currentIndex} = this.props.trackSelect;
+
             let audioUrl = tracklist[currentIndex].path;
             totalLength = tracklist[currentIndex].length;
             name = tracklist[currentIndex].name;
             totalTime = formatDate(totalLength);
             audio = <audio ref={"audio"} src={audioUrl} autoPlay onTimeUpdate={this._onPlaying}
-                           loop={this.state.repeat}
+                           loop={appConfig.playModel == PlayModel.icon_repeat}
                            onEnded={this._audioEnd}
             />;
             playicon = this.state.play ? "icon_pause" : "icon_play";
         }
 
 
-        let soundicon = this.state.silent ? "icon_volume_off" : "icon_volume_on";
+        let soundicon = this.props.appConfig.silent ? "icon_volume_off" : "icon_volume_on";
         return (
             <div style={styles.controller}>
                 <IconButton iconClassName={"icon_previous"} onTouchTap={this._previousMusic}/>
@@ -237,17 +213,15 @@ class TrackPlay extends Component {
                             onTouchTap={this._onVolumeSilent}/>
                 <Slider style={{width: 100}} sliderStyle={{margin: 0}}
                         onChange={this._onVolumeChange}
-                        disableFocusRipple={true} defaultValue={this.props.volume}
+                        disableFocusRipple={true} defaultValue={this.props.appConfig.volume}
                 ></Slider>
-                <IconButton iconClassName={this.state.playModel} onTouchTap={this._playModelChange}/>
+                <IconButton iconClassName={appConfig.playModel} onTouchTap={this._playModelChange}/>
             </div>
         );
     }
 }
 
-TrackPlay.defaultProps = {
-    volume: 0.8,
-}
+TrackPlay.defaultProps = {}
 
 
 const styles = {
@@ -276,6 +250,7 @@ const styles = {
 function mapStateToProps(state) {
     return {
         trackSelect: state.trackSelect,
+        appConfig: state.appConfig,
     }
 }
 
@@ -283,6 +258,9 @@ function mapActionToProps(dispatch) {
     return {
         selectTrack: (list, index, trackId) => {
             dispatch(action.selectTrack(list, index, trackId))
+        },
+        saveConfig: (key, value) => {
+            dispatch(appAction.saveConfig(key, value));
         }
     }
 }

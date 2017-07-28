@@ -3,14 +3,16 @@
  */
 
 import {combineReducers} from 'redux';
+import {getMusic, getSelectMusic} from "./r_music";
+import {getTrack, importTrack, selectTrack} from "./r_track";
+import {getAppConfig} from "./r_appconfig";
 
 
-const {getMusic, getSelectMusic}=require('./r_music');
-const {getTrack, importTrack,selectTrack}=require('./r_track');
 module.exports = combineReducers({
     musicList: getMusic,
     selectMusicId: getSelectMusic,
     trackList: getTrack,
     trackDialog: importTrack,
-    trackSelect:selectTrack,
+    trackSelect: selectTrack,
+    appConfig: getAppConfig,
 })

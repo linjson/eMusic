@@ -210,7 +210,7 @@ class TrackList extends Component {
         }
 
         let {list} = trackList;
-        return list[index].trackId == trackId ? 'currentPlayRow' : 'trackItemRow';
+        return list[index].id == trackId ? 'currentPlayRow' : 'trackItemRow';
     }
 
     _sort = ({sortBy, sortDirection}) => {

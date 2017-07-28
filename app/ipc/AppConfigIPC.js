@@ -1,8 +1,8 @@
 const {ipcMain} = require('electron')
 const Store = require('electron-store');
-const appConfig = new Store();
-const {AppEventName} = require('./EventNameConfig')
 
+const {AppEventName} = require('./EventNameConfig')
+const appConfig = new Store();
 function BindAppConfigEvent(eventList) {
 
     eventList.forEach((n) => {
