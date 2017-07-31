@@ -203,14 +203,7 @@ class TrackList extends Component {
         if (index < 0) {
             return 'trackHeaderRow';
         }
-        let {trackList, trackSelect} = this.props;
-        let trackId = -1;
-        if (trackSelect) {
-            trackId = trackSelect.trackId;
-        }
-
-        let {list} = trackList;
-        return list[index].id == trackId ? 'currentPlayRow' : 'trackItemRow';
+        return 'trackItemRow'
     }
 
     _sort = ({sortBy, sortDirection}) => {
@@ -228,15 +221,18 @@ class TrackList extends Component {
             this._play(rowData, rowIndex);
         }
 
+        let cls = "icon_play_item";
+        return <IconButton iconClassName={cls} onTouchTap={tap}/>
+    }
 
+    _renderCurrentItem = ({rowData, rowIndex}) => {
         let {trackSelect} = this.props;
         let trackId = -1;
         if (trackSelect) {
             trackId = trackSelect.trackId;
         }
-        let cls = trackId == rowData.id ? "icon_pause_item" : "icon_play_item";
-        cls = "icon_play_item";
-        return <IconButton iconClassName={cls} onTouchTap={tap}/>
+        let cls = trackId == rowData.id ? "trackItemColumnSelect" : "";
+        return <div className={cls} style={{height: '100%'}}></div>
     }
 
     render() {
@@ -263,8 +259,14 @@ class TrackList extends Component {
                                 sortDirection={sortDirection}
                             >
                                 <Column
+                                    width={2}
+                                    className={'trackItemColumn'}
+                                    dataKey={''}
+                                    disableSort={true}
+                                    cellRenderer={this._renderCurrentItem}
+                                />
+                                <Column
                                     width={50}
-                                    className={'test'}
                                     dataKey={''}
                                     disableSort={true}
                                     cellRenderer={this._renderPlayItem}
@@ -345,43 +347,6 @@ class TrackList extends Component {
         );
 
         return v;
-    }
-}
-
-const styles = {
-    col_current: {
-        width: 2,
-        padding: 0,
-    },
-    col_no: {
-        width: 10,
-    },
-    col_size: {
-        width: 50,
-    },
-    col_length: {
-        width: 35,
-    },
-    col_op: {
-        padding: 0,
-        width: 50,
-    },
-    col_op_content: {
-        width: 50,
-        padding: 0,
-    },
-    col_times: {
-        width: 40,
-        paddingHorizontal: 5,
-        textAlign: 'center',
-    },
-    col_title: {
-        alignItems: 'center',
-        display: 'flex',
-    },
-    btn: {
-        minWidth: 20,
-        width: 40,
     }
 }
 
