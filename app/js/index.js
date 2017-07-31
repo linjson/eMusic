@@ -49,7 +49,7 @@ var store = configStore({
         loading: false, list: null, trackId: -1,
     },
     selectMusicId: 0,
-    trackSelect: null,
+    trackSelect: readConfig(Conf.trackSelect, null),
     appConfig: {
         volume: readConfig(Conf.volume, 0.8),
         silent: readConfig(Conf.silent, false),

@@ -4,7 +4,7 @@
 
 
 import {AppEventName} from '../../ipc/EventNameConfig';
-
+const {saveConfig, Conf} = require('../appconfig');
 function getTrack(state = {}, action) {
 
     if (action.type == AppEventName.listTrack) {
@@ -36,12 +36,16 @@ function importTrack(state = {}, action) {
 
 function selectTrack(state = {}, action) {
     if (action.type == AppEventName.selectTrack) {
-        return {
+        let r = {
             tracklist: action.tracklist,
-            currentIndex:action.currentIndex,
-            trackId:action.trackId,
+            currentIndex: action.currentIndex,
+            trackId: action.trackId,
 
         };
+        saveConfig(Conf.trackSelect, r);
+
+
+        return r;
     }
 
     return state;

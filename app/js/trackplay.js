@@ -164,6 +164,18 @@ class TrackPlay extends Component {
 
     }
 
+    componentDidMount() {
+        let audio = this._getAudio();
+        if (!audio) {
+            return;
+        }
+
+        let {volume, silent} = this.props.appConfig;
+        audio.volume = volume;
+        audio.muted = silent;
+    }
+
+
     render() {
         let audio = null;
         let totalTime;
@@ -189,6 +201,7 @@ class TrackPlay extends Component {
 
 
         let soundicon = this.props.appConfig.silent ? "icon_volume_off" : "icon_volume_on";
+
         return (
             <div style={styles.controller}>
                 <IconButton iconClassName={"icon_previous"} onTouchTap={this._previousMusic}/>
