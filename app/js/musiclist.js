@@ -1,3 +1,6 @@
+import action from "./action/a_music";
+import {OpenFileDialog} from "../ipc/FileDialogIPC";
+import {ipcRenderer as ipc} from "electron";
 import React, {Component} from 'react';
 import {
     Subheader, List, ListItem,
@@ -6,9 +9,7 @@ import {
     Dialog, LinearProgress
 } from 'material-ui';
 import {connect} from 'react-redux';
-const ipc = require('electron').ipcRenderer;
-const {OpenFileDialog} = require('../ipc/FileDialogIPC');
-const action = require('./action/a_music');
+
 import {AppEventName} from '../ipc/EventNameConfig';
 
 class GroupName extends Component {

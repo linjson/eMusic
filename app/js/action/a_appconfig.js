@@ -3,10 +3,8 @@
  */
 
 import {AppEventName} from '../../ipc/EventNameConfig';
+import {saveConfig} from "../appconfig";
 
-const ipc = require('electron').ipcRenderer
-
-const {saveConfig, Conf} = require('../appconfig');
 
 const action = {
     saveConfig(key, value){

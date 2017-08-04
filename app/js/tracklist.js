@@ -171,7 +171,7 @@ class TrackList extends Component {
     }
 
     _onItemDelete = (n) => {
-        this.props.delTrack(n, false);
+        this.props.delTrack(this.props.trackList.list, n, false);
     }
 
     _onItemFileDelete = (n) => {
@@ -179,11 +179,11 @@ class TrackList extends Component {
     }
 
     _onItemMove = (data, mid) => {
-        this.props.moveTrack(data, mid);
+        this.props.moveTrack(this.props.trackList.list,data, mid);
     }
 
     _askConfirm = (n) => {
-        this.props.delTrack(n, true);
+        this.props.delTrack(this.props.trackList.list, n, true);
         this.setState({ask: false, askData: null});
     }
 
@@ -370,11 +370,11 @@ function mapActionToProps(dispatch, props) {
         selectTrack: (list, index, trackId) => {
             dispatch(action.selectTrack(list, index, trackId))
         },
-        delTrack: (data, removeFile) => {
-            dispatch(action.delTrack(data, removeFile))
+        delTrack: (oldlist, data, removeFile) => {
+            dispatch(action.delTrack(oldlist, data, removeFile))
         },
-        moveTrack: (data, mid) => {
-            dispatch(action.moveTrack(data, mid))
+        moveTrack: (oldlist,data, mid) => {
+            dispatch(action.moveTrack(oldlist,data, mid))
         },
         sortTrack: (list, sort) => {
             dispatch(action.sortTrack(list, sort));

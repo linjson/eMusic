@@ -4,8 +4,7 @@
 
 import {AppEventName} from '../../ipc/EventNameConfig';
 import {DeleteFile} from '../../ipc/FileDialogIPC';
-
-const ipc = require('electron').ipcRenderer
+import {ipcRenderer as ipc} from "electron";
 
 
 const action = {
@@ -122,14 +121,13 @@ const action = {
             })
         }
     },
-    delTrack(data, removeFile){
+    delTrack(oldlist, data, removeFile){
         return (d, s) => {
-            let {mid} = data;
             ipc.sendSync(AppEventName.delTrack, {id: data.id});
             if (removeFile) {
                 ipc.send(DeleteFile, {path: data.path});
             }
-            let list = ipc.sendSync(AppEventName.listTrack, {mid});
+            let list = oldlist.filter(n => n.id != data.id);
             this._listMusic(d);
             d({
                 type: AppEventName.listTrack,
@@ -138,10 +136,10 @@ const action = {
         }
     },
 
-    moveTrack(data, mid){
+    moveTrack(oldlist,data, mid){
         return (d, s) => {
             ipc.sendSync(AppEventName.moveTrack, {id: data.id, mid});
-            let list = ipc.sendSync(AppEventName.listTrack, {mid: data.mid});
+            let list=oldlist.filter(n=>n.id!=data.id);
             this._listMusic(d);
             d({
                 type: AppEventName.listTrack,

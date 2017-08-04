@@ -1,6 +1,11 @@
 /**
  * Created by ljs on 2017/3/17.
  */
+
+require('../css/index.scss');
+
+import React from "react";
+import ReactDOM from "react-dom";
 import {ipcRenderer as ipc} from "electron";
 import 'react-virtualized/styles.css';
 import {AppEventName} from '../ipc/EventNameConfig';
@@ -8,15 +13,10 @@ import {readConfig, Conf, PlayModel, playModelAction} from './appconfig';
 import {createStore, applyMiddleware, compose} from 'redux'
 import {persistStore, autoRehydrate} from 'redux-persist'
 import thunk from 'redux-thunk'
-
-require('../css/index.scss');
-
-const React = require('react');
-const ReactDOM = require('react-dom');
-
-const AppReduce = require('./reducer')
-const Home = require('./home');
 import {Provider, connect} from 'react-redux';
+
+import AppReduce from "./reducer";
+import Home from "./home";
 
 function configStore(initState) {
     let store = createStore(AppReduce,
