@@ -2,7 +2,7 @@
  * Created by ljs on 2017/4/12.
  */
 
-
+import _ from 'lodash';
 import {AppEventName} from '../../ipc/EventNameConfig';
 const {saveConfig, Conf} = require('../appconfig');
 function getTrack(state = {}, action) {
@@ -11,8 +11,19 @@ function getTrack(state = {}, action) {
         return {
             loading: false,
             list: action.list,
-            // sort:action.sort,
         }
+    } else if (action.type == AppEventName.sortTrack) {
+        let {sortBy, sortDirection} = action;
+        let {list} = state;
+
+        list = _.orderBy(list, [sortBy], [sortDirection]);
+
+        return {
+            loading: false,
+            list,
+        }
+
+
     }
 
 

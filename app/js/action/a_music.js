@@ -34,24 +34,33 @@ const action = {
 
     delMusic(id){
         return (dispatch, state) => {
-            ipc.sendSync(AppEventName.delMusic, {id});
-            this._listMusic(dispatch);
+            ipc.send(AppEventName.delMusic, {id});
+            dispatch({
+                type: AppEventName.delMusic,
+                id
+            })
         }
     },
 
     renameMusic(id, name){
         return (dispatch, state) => {
-            ipc.sendSync(AppEventName.renameMusic, {id, name});
-            this._listMusic(dispatch);
+            ipc.send(AppEventName.renameMusic, {id, name});
+            dispatch({
+                type: AppEventName.renameMusic,
+                id,
+                name
+            })
         }
     },
 
-    sortMusic(id, value, orderby){
+    sortMusic(id, sort){
         return (dispatch, state) => {
-            const r = ipc.sendSync(AppEventName.sortMusic, {id, value, orderby});
-            if (r) {
-                this._listMusic(dispatch);
-            }
+            ipc.send(AppEventName.sortMusic, {id, value: sort});
+            dispatch({
+                type: AppEventName.sortMusic,
+                id,
+                sort
+            })
         }
     },
 
@@ -136,10 +145,10 @@ const action = {
         }
     },
 
-    moveTrack(oldlist,data, mid){
+    moveTrack(oldlist, data, mid){
         return (d, s) => {
             ipc.sendSync(AppEventName.moveTrack, {id: data.id, mid});
-            let list=oldlist.filter(n=>n.id!=data.id);
+            let list = oldlist.filter(n => n.id != data.id);
             this._listMusic(d);
             d({
                 type: AppEventName.listTrack,
@@ -159,12 +168,11 @@ const action = {
 
         }
     },
-    sortTrack(list, sort){
+    sortTrack(sortBy, sortDirection){
         return (d, s) => {
-
             d({
-                type: AppEventName.listTrack,
-                list,
+                type: AppEventName.sortTrack,
+                sortBy, sortDirection,
             })
         }
     }

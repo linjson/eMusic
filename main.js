@@ -2,9 +2,8 @@
  * Created by ljs on 15/10/30.
  */
 const electron = require('electron');
-// Module to control application life.
-// Module to create native browser window.
-const {app, BrowserWindow} = electron;
+const {app, BrowserWindow,globalShortcut,ipcMain} = electron;
+
 //var dialog = require('dialog');
 var path = require('path');
 var url = require('url');
@@ -29,6 +28,10 @@ app.on('window-all-closed', function () {
     }
 });
 
+app.on('will-quit', function () {
+    globalShortcut.unregisterAll()
+})
+
 // var cachePath = path.join(__dirname, 'cache');
 // var devMode = (process.argv || []).indexOf('-r') !== -1;
 
@@ -37,22 +40,7 @@ app.on('window-all-closed', function () {
 // 这个方法就被调用
 app.on('ready', function () {
 
-    // if (fs.statSyncNoException(cachePath) && !devMode) {
-    //     electronCompile.initForProduction(cachePath);
-    //     console.log("initForProduction");
-    // } else {
-    //     var appRoot = path.join(__dirname, '..');
-    //     electronCompile.init(appRoot,'.');
-    //     console.log("init");
-    // }
 
-
-    // Music.create({
-    //     name: 'XiaoMing',
-    //     sort: 0,
-    // })
-
-    //var _ = require("underscore-plus");
     var opt = {
         width: 1000,
         height: 600,
@@ -104,5 +92,12 @@ app.on('ready', function () {
         mainWindow = null;
     });
 
+
+    // globalShortcut.register('Command+A', function () {
+    //
+    //     // app.sender.send('test',{name:'ljs'});
+    //     mainWindow.webContents.send("test",{name:'ljs'});
+    //     console.log("==>a")
+    // })
 
 });

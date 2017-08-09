@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        vendor: ['react', 'react-dom','material-ui','react-tap-event-plugin','redux','redux-persist','redux-thunk','react-redux','react-virtualized','lodash'],
+        vendor: ['react', 'react-dom','material-ui','react-tap-event-plugin','redux','redux-persist','redux-thunk','react-redux','react-virtualized','lodash','react-router','react-router-redux','react-router-dom','history','react-motion','react-resizable-box',],
     },
     output: {
         path: path.join(__dirname, 'dist'),

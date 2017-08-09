@@ -2,6 +2,7 @@ import action from "./action/a_music";
 import {OpenFileDialog} from "../ipc/FileDialogIPC";
 import {ipcRenderer as ipc} from "electron";
 import React, {Component} from 'react';
+import _ from 'lodash';
 import {
     Subheader, List, ListItem,
     Divider, IconButton, IconMenu,
@@ -9,7 +10,7 @@ import {
     Dialog, LinearProgress
 } from 'material-ui';
 import {connect} from 'react-redux';
-
+import {SortablePane, Pane} from './component/react-sortable-pane';
 import {AppEventName} from '../ipc/EventNameConfig';
 
 class GroupName extends Component {
@@ -38,8 +39,6 @@ class MusicMenu extends Component {
         importMulti: React.PropTypes.func,
         importFiles: React.PropTypes.func,
         rename: React.PropTypes.func,
-        moveUp: React.PropTypes.func,
-        moveDown: React.PropTypes.func,
         delMusic: React.PropTypes.func,
         data: React.PropTypes.object,
     }
@@ -54,10 +53,6 @@ class MusicMenu extends Component {
             this.props.importFiles && this.props.importFiles(id);
         } else if (value == 3) {
             this.props.rename && this.props.rename(id);
-        } else if (value == 4) {
-            this.props.moveUp && this.props.moveUp(id);
-        } else if (value == 5) {
-            this.props.moveDown && this.props.moveDown(id);
         } else if (value == 6) {
             this.props.delMusic && this.props.delMusic(id);
         }
@@ -79,8 +74,6 @@ class MusicMenu extends Component {
             >
                 <MenuItem value="2">导入文件(夹)</MenuItem>
                 <MenuItem value="3">重命名</MenuItem>
-                <MenuItem value="4">上移</MenuItem>
-                <MenuItem value="5">下移</MenuItem>
                 <MenuItem value="6">删除</MenuItem>
             </IconMenu>
         )
@@ -122,21 +115,6 @@ class MusicItem extends Component {
 
     }
 
-    moveDown = () => {
-        let {data} = this.props;
-
-        let {id, sort} = data;
-        this.props.sortMusic && this.props.sortMusic(id, sort, "down");
-
-    }
-
-    moveUp = () => {
-        let {data} = this.props;
-        let {id, sort} = data;
-        this.props.sortMusic && this.props.sortMusic(id, sort, "up");
-
-    }
-
     itemClick = () => {
         let {data} = this.props;
         this.props.onItemClick && this.props.onItemClick(data);
@@ -165,13 +143,11 @@ class MusicItem extends Component {
 
             const el = <div><MusicMenu data={data}
                                        delMusic={this.props.delMusic}
-                                       moveDown={this.moveDown}
-                                       moveUp={this.moveUp}
                                        importFiles={this.importFiles}
                                        rename={this.showInput}/>
             </div>;
             v = <ListItem style={selectColor} primaryText={text} rightIconButton={el}
-                          onClick={this.itemClick}/>;
+                          onTouchTap={this.itemClick}/>;
         }
 
 
@@ -220,6 +196,9 @@ class MusicList extends Component {
     }
 
     componentDidMount() {
+        if (this.props.selectMusicId > 0) {
+            return;
+        }
         let {musicList} = this.props;
         if (musicList.list && musicList.list.length != 0) {
             this.props.selectMusic(musicList.list[0].id);
@@ -231,7 +210,7 @@ class MusicList extends Component {
             this.props.listMusic();
         });
 
-        ipc.on(OpenFileDialog, (e, {files,mid}) => {
+        ipc.on(OpenFileDialog, (e, {files, mid}) => {
             if (files) {
                 this.props.importTrack(files, mid);
             }
@@ -244,16 +223,62 @@ class MusicList extends Component {
             return null;
         }
         return musicList.list.map(n => {
-            return <MusicItem key={n.id}
-                              data={n}
-                              selectId={selectMusicId}
-                              delMusic={this.delMusic}
-                              sortMusic={this.sortMusic}
-                              renameMusic={this.renameMusic}
-                              onItemClick={this.itemClick}
-                              importFiles={this.importFiles}
-            />
+            return <Pane key={n.id} height={48} width={'100%'} id={n.id}
+                         isResizable={{x: false, y: false, xy: false}}
+            ><MusicItem
+                data={n}
+                selectId={selectMusicId}
+                delMusic={this.delMusic}
+                sortMusic={this.sortMusic}
+                renameMusic={this.renameMusic}
+                onItemClick={this.itemClick}
+                importFiles={this.importFiles}
+            /></Pane>
         });
+
+
+    }
+
+    _listDragStop = (e, id, panes) => {
+        let preIndex, nextIndex;
+        let musiclist = _.cloneDeep(this.props.musicList.list);
+        let targetIndex = panes.findIndex((n, i) => {
+            return n.id == id;
+        });
+
+        let oldIndex = musiclist.findIndex((n, i) => {
+            return n.id == id;
+        })
+
+        if (oldIndex == targetIndex) {
+            return;
+        }
+
+        preIndex = targetIndex > 0 ? targetIndex - 1 : 0;
+        nextIndex = targetIndex < panes.length - 1 ? targetIndex + 1 : panes.length - 1;
+
+        let sort = 0;
+        if (targetIndex == 0) {
+            let nextObj = musiclist.find((n) => {
+                return n.id == panes[nextIndex].id;
+            })
+            sort = nextObj.sort - 1;
+        } else if (targetIndex == panes.length - 1) {
+            let preObj = musiclist.find((n) => {
+                return n.id == panes[preIndex].id;
+            })
+            sort = preObj.sort + 1;
+        } else {
+            let nextObj = musiclist.find((n) => {
+                return n.id == panes[nextIndex].id;
+            })
+            let preObj = musiclist.find((n) => {
+                return n.id == panes[preIndex].id;
+            })
+            sort = (nextObj.sort + preObj.sort) / 2;
+        }
+
+        this.props.sortMusic(id, sort);
 
 
     }
@@ -261,11 +286,12 @@ class MusicList extends Component {
 
     render() {
 
-
         return (
             <List style={{backgroundColor: 'white'}}>
                 <Subheader><GroupName label="全部" iconClassName={"icon_add"} iconClick={this.addMusic}/></Subheader>
-                {this.renderItems()}
+                <SortablePane key="list" direction="vertical" onDragStop={this._listDragStop}>
+                    {this.renderItems()}
+                </SortablePane>
             </List>
         );
     }
@@ -344,8 +370,8 @@ function mapActionToProps(dispatch) {
         renameMusic: (id, name) => {
             dispatch(action.renameMusic(id, name))
         },
-        sortMusic: (id, value, orderby) => {
-            dispatch(action.sortMusic(id, value, orderby))
+        sortMusic: (id, value) => {
+            dispatch(action.sortMusic(id, value))
         },
         selectMusic: (id) => {
             dispatch(action.selectMusic(id));

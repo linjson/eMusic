@@ -13,7 +13,6 @@ const fs = require('fs');
 // const os = require('os')
 
 
-
 const userDataDir = (electron.app || electron.remote.app).getPath('userData');
 
 var dbFile = path.join(userDataDir, "emusic.sqlite3");
@@ -79,9 +78,8 @@ const DataBaseEventFuncList = [
     },
     {
         eventName: AppEventName.renameMusic,
-        event: async (e, {id, name}) => {
-            const v = await Musics.update({name}, {where: {id}});
-            e.returnValue = v.toString();
+        event: (e, {id, name}) => {
+            Musics.update({name}, {where: {id}});
         }
     },
     {
@@ -97,37 +95,37 @@ const DataBaseEventFuncList = [
     },
     {
         eventName: AppEventName.delMusic,
-        event: async (e, {id}) => {
-            await Tracks.destroy({where: {mid: id}});
-            const v = await Musics.destroy({where: {id}});
+        event: (e, {id}) => {
+            Tracks.destroy({where: {mid: id}});
+            Musics.destroy({where: {id}});
 
-            e.returnValue = v;
         }
     },
     {
         eventName: AppEventName.sortMusic,
-        event: async (e, {id, value, orderby}) => {
-            let sort = orderby == "up" ? {lt: value} : {gt: value};
-            let order = orderby == "up" ? [["sort", "desc"]] : null;
-            const v = await Musics.findAll({
-                where: {
-                    sort
-                }, limit: 2, order
-            });
+        event: (e, {id, value, orderby}) => {
+            // let sort = orderby == "up" ? {lt: value} : {gt: value};
+            // let order = orderby == "up" ? [["sort", "desc"]] : null;
+            // const v = await Musics.findAll({
+            //     where: {
+            //         sort
+            //     }, limit: 2, order
+            // });
+            //
+            // const list = convertListJson(v);
+            // if (list.length == 0) {
+            //     e.returnValue = false;
+            //     return;
+            // }
+            // let result = 0;
+            // if (list.length == 1) {
+            //     result = list[0].sort + (orderby == "down" ? 1 : -1);
+            // } else {
+            //     result = sumBy(list, (n) => n.sort) / 2;
+            // }
+            Musics.update({sort: value}, {where: {id}});
+            // e.returnValue = true;
 
-            const list = convertListJson(v);
-            if (list.length == 0) {
-                e.returnValue = false;
-                return;
-            }
-            let result = 0;
-            if (list.length == 1) {
-                result = list[0].sort + (orderby == "down" ? 1 : -1);
-            } else {
-                result = sumBy(list, (n) => n.sort) / 2;
-            }
-            await Musics.update({sort: result}, {where: {id}});
-            e.returnValue = true;
         }
     },
     {
@@ -176,7 +174,12 @@ const DataBaseEventFuncList = [
             list.reduce((chain, fn) => {
                 return chain.then(() => fn())
                     .then(t => {
-                        e.sender.send(AppEventName.importDialog, {name: t.path, max: size, value: (no + 1), open: true});
+                        e.sender.send(AppEventName.importDialog, {
+                            name: t.path,
+                            max: size,
+                            value: (no + 1),
+                            open: true
+                        });
                         no++;
                     });
             }, Promise.resolve()).then(() => {

@@ -13,7 +13,6 @@ import {connect} from 'react-redux';
 import action from "./action/a_music";
 import {formatDate} from "./utils";
 import filesize from "filesize";
-import _ from "lodash";
 
 class TrackMenu extends Component {
 
@@ -207,12 +206,7 @@ class TrackList extends Component {
     }
 
     _sort = ({sortBy, sortDirection}) => {
-
-        let {list} = this.props.trackList;
-        if (list) {
-            list = _.orderBy(list, [sortBy], [sortDirection.toLowerCase()]);
-        }
-        this.props.sortTrack(list);
+        this.props.sortTrack(sortBy,sortDirection.toLowerCase());
         this.setState({sortBy, sortDirection});
     }
 
@@ -376,8 +370,8 @@ function mapActionToProps(dispatch, props) {
         moveTrack: (oldlist,data, mid) => {
             dispatch(action.moveTrack(oldlist,data, mid))
         },
-        sortTrack: (list, sort) => {
-            dispatch(action.sortTrack(list, sort));
+        sortTrack: (sortBy, sortDirection) => {
+            dispatch(action.sortTrack(sortBy, sortDirection));
         }
 
     }

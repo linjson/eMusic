@@ -18,6 +18,7 @@ const AppEventName = keymirror({
     increaseTrack: null,
     saveConfig:null,
     getConfig:null,
+    sortTrack:null,
 })
 
 
