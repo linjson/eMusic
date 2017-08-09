@@ -9,12 +9,9 @@ function getAppConfig(state = {}, action) {
 
     if (action.type == AppEventName.saveConfig) {
         const k = action.key;
-        return {
-            ...state,
-            [k]: action.value,
-        }
+        state[k]=action.value;
+        return state;
     }
-
 
     return state;
 
