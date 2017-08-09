@@ -66,11 +66,13 @@ class MusicMenu extends Component {
             />
         )
 
+        let {importMulti,importFiles,rename,delMusic,data,...other}=this.props;
         return (<IconMenu iconButtonElement={iconButtonElement}
                           listStyle={{paddingTop: 0, paddingBottom: 0}}
                           anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                           desktop={true}
                           onItemTouchTap={this.menuClick}
+                          {...other}
             >
                 <MenuItem value="2">导入文件(夹)</MenuItem>
                 <MenuItem value="3">重命名</MenuItem>
@@ -141,11 +143,10 @@ class MusicItem extends Component {
             const selectColor = data.id == selectId ? {backgroundColor: "#dcdcdc"} : null;
             const text = `${data.name}(${data.count})`
 
-            const el = <div><MusicMenu data={data}
+            let el = <MusicMenu data={data}
                                        delMusic={this.props.delMusic}
                                        importFiles={this.importFiles}
                                        rename={this.showInput}/>
-            </div>;
             v = <ListItem style={selectColor} primaryText={text} rightIconButton={el}
                           onTouchTap={this.itemClick}/>;
         }
@@ -287,12 +288,12 @@ class MusicList extends Component {
     render() {
 
         return (
-            <List style={{backgroundColor: 'white'}}>
+            <div style={{backgroundColor: 'white'}}>
                 <Subheader><GroupName label="全部" iconClassName={"icon_add"} iconClick={this.addMusic}/></Subheader>
                 <SortablePane key="list" direction="vertical" onDragStop={this._listDragStop}>
                     {this.renderItems()}
                 </SortablePane>
-            </List>
+            </div>
         );
     }
 }
