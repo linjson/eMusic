@@ -148,6 +148,7 @@ $topColor: #00BCD4;
 .trackItemRow {
   border-bottom: 1px solid #dcdcdc;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .trackItemRow:hover {
@@ -159,6 +160,7 @@ $topColor: #00BCD4;
   border-bottom: 1px solid $topColor;
   font-weight: normal;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .trackTimesColumns {
