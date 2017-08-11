@@ -30,9 +30,10 @@
     "optimize-css-assets-webpack-plugin": "^1.3.0",
     "postcss-loader": "^2.0.5",
     "precss": "^1.4.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "react-hot-loader": "^1.3.1",
+    "react-material-ripple": "^0.1.0",
     "react-motion": "^0.5.0",
     "react-redux": "^5.0.4",
     "react-resizable-box": "^2.0.6",
@@ -49,7 +50,6 @@
     "style-loader": "^0.13.2",
     "url-loader": "^0.5.8",
     "webpack": "^2.2.1",
-    "react-material-ripple": "^0.1.0",
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
