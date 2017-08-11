@@ -2,9 +2,8 @@
  * Created by ljs on 2017/3/30.
  */
 require('sqlite3');
-const {sumBy} = require('./Utils');
+const {bindIPCEvent} = require('./Utils');
 const electron = require('electron');
-const ipcMain = electron.ipcMain
 const {AppEventName} = require('./EventNameConfig')
 
 const Sequelize = require('sequelize');
@@ -50,14 +49,6 @@ function DataBaseInit(cb) {
     })
 }
 
-function BindDataBaseEvent(eventList) {
-    eventList.forEach((n) => {
-        ipcMain.on(n.eventName, (e, param) => {
-            n.event(e, param);
-        })
-    })
-
-}
 
 function convertListJson(list) {
     return list.map(n => n.toJSON());
@@ -231,7 +222,7 @@ const DataBaseEventFuncList = [
 
 ]
 
-BindDataBaseEvent(DataBaseEventFuncList);
+bindIPCEvent(DataBaseEventFuncList);
 
 module.exports = {
     DataBaseInit, Musics,

@@ -49,13 +49,14 @@
     "style-loader": "^0.13.2",
     "url-loader": "^0.5.8",
     "webpack": "^2.2.1",
+    "react-material-ripple": "^0.1.0",
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
+    "electron-store": "^1.2.0",
     "mp3length": "^1.0.3",
     "sequelize": "^3.30.4",
-    "sqlite3": "^3.1.8",
-    "electron-store": "^1.2.0"
+    "sqlite3": "^3.1.8"
   },
   "scripts": {
     "dll": "./node_modules/.bin/webpack --config webpack.dll.config.js",

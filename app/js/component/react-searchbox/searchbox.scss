@@ -1,0 +1,119 @@
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+$transitionTime:0.6s;
+
+.box {
+  display: flex;
+  height: 36px;
+  margin-top: 8px;
+  width: 30px;
+  position: relative;
+  transition: $transitionTime;
+  align-items: center;
+  border:1px solid transparent;
+  border-radius: 24px;
+
+}
+
+.box_open {
+  @extend .box;
+  width: 200px;
+  background-color: white;
+  border:1px solid gainsboro;
+}
+
+.searchbtn {
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.searchbtn:before {
+  @extend .material-icons;
+  content: "\e8b6";
+  color: white;
+  font-size: 24px;
+  transition: $transitionTime;
+}
+
+.box_open .searchbtn:before{
+  color: gainsboro;
+  transition: $transitionTime;
+}
+
+.closebtn {
+  @extend .searchbtn;
+  height: 20px;
+  width: 20px;
+  right: 0;
+  left: auto;
+  background-color: gainsboro;
+  opacity: 0;
+  transition: $transitionTime;
+  border-radius: 100%;
+}
+
+.closebtn:before {
+  content: "\e5cd";
+  color: white;
+  font-size: 20px;
+}
+
+.box_open .closebtn{
+  opacity: 1;
+  transition:opacity $transitionTime;
+}
+
+.box_open .closebtn:before {
+  color: white;
+}
+
+.searchInput{
+  background-color: transparent;
+  width:0px;
+  height:30px;
+  border:0px;
+  position: absolute;
+  box-sizing: border-box;
+  opacity: 0;
+  outline: none;
+  transition:$transitionTime;
+  font-size: 15px;
+}
+
+.box_open .searchInput {
+  padding-left: 30px;
+  padding-right:30px;
+  opacity: 1;
+  transition:opacity $transitionTime,padding-left 0.2s,padding-right 0s 0.5s;
+  width:100%;
+}

@@ -9,7 +9,7 @@ import {OnMove, StartMove} from "../ipc/WindowMoveIPC";
 import {ipcRenderer as ipc} from "electron";
 import action from './action/a_music';
 import {connect} from 'react-redux';
-
+import SearchBox from './component/react-searchbox';
 class AppTop extends Component {
 
     static propTypes = {
@@ -42,25 +42,12 @@ class AppTop extends Component {
     mouseUp = (e) => {
         this.startMove = false;
     }
-    inputKeyDown = (e) => {
-        let {keyCode} = e;
-
-        if (keyCode == 13) {
-            this.props.searchTrack(e.target.value, this.props.selectMusicId);
-        }
-
+    _onSearch = (value) => {
+        this.props.searchTrack(value, this.props.selectMusicId);
     }
 
     createSearch() {
-
-        return <TextField id={"search"}
-                          underlineShow={false}
-                          hintText={"搜索"}
-                          rowsMax={1}
-                          onKeyDown={this.inputKeyDown}
-                          hintStyle={styles.hintStyle}
-                          style={styles.textFieldStyle}
-                          inputStyle={styles.searchStyle}/>;
+        return <SearchBox onSearch={this._onSearch}/>
     }
 
     render() {

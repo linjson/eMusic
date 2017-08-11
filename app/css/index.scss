@@ -176,12 +176,12 @@ $topColor: #00BCD4;
 
 .icon_play_item:before {
   @extend .icon_play;
-  @include icon_button(red);
+  //@include icon_button(red);
 }
 
 .icon_pause_item:before {
   @extend .icon_pause;
-  @include icon_button(red);
+  //@include icon_button(red);
 }
 
 

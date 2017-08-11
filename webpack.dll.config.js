@@ -1,9 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
-
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
     entry: {
-        vendor: ['react', 'react-dom','material-ui','react-tap-event-plugin','redux','redux-persist','redux-thunk','react-redux','react-virtualized','lodash','react-router','react-router-redux','react-router-dom','history','react-motion','react-resizable-box',],
+        vendor: ['react', 'react-dom','material-ui','react-tap-event-plugin','redux','redux-persist','redux-thunk','react-redux','react-virtualized','lodash','react-router','react-router-redux','react-router-dom','history','react-motion','react-resizable-box', 'react-material-ripple'],
     },
     output: {
         path: path.join(__dirname, 'dist'),
@@ -16,6 +16,8 @@ module.exports = {
         library: '[name]_library'
     },
     plugins: [
+        new ExtractTextPlugin('[name].css'),
+
         new webpack.DllPlugin({
             /**
              * path
@@ -35,5 +37,22 @@ module.exports = {
         //         warnings: false
         //     },
         // }),
-    ]
+        // new webpack.LoaderOptionsPlugin({
+        //     minimize: true,
+        // }),
+    ],
+    module: {
+
+        loaders: [
+            {
+                test: /\.(css)$/,
+                exclude: /^node_modules$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader?importLoaders=1!postcss-loader',
+                    publicPath: '../'
+                }),
+            },
+        ],
+    },
 };

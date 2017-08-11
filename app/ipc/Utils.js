@@ -1,3 +1,6 @@
+const electron = require('electron');
+const ipcMain = electron.ipcMain
+
 const keymirror = function keyMirror(obj) {
     var ret = {};
     var key;
@@ -21,6 +24,14 @@ const sumBy = (list, fn) => {
     return sum;
 }
 
+const bindIPCEvent = (eventlist) => {
+    eventlist.forEach((n) => {
+        ipcMain.on(n.eventName, (e, param) => {
+            n.event(e, param);
+        })
+    })
+}
+
 module.exports = {
-    keymirror, sumBy
+    keymirror, sumBy, bindIPCEvent
 };

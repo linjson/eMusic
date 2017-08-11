@@ -3,11 +3,12 @@
  */
 
 require('../css/index.scss');
+import 'react-virtualized/styles.css';
 
 import React from "react";
 import ReactDOM from "react-dom";
 import {ipcRenderer as ipc} from "electron";
-import 'react-virtualized/styles.css';
+
 import {AppEventName} from '../ipc/EventNameConfig';
 import {readConfig, Conf, PlayModel, playModelAction} from './appconfig';
 import {createStore, applyMiddleware, compose} from 'redux'

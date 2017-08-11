@@ -35,7 +35,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: './app/index.html',
-            server:'http://localhost:7777',
+            server: 'http://localhost:7777',
             excludeChunks: ['js/index'],
         }),
         new CopyWebpackPlugin([
@@ -76,13 +76,19 @@ module.exports = {
             {
                 test: /\.(css)$/,
                 exclude: /^node_modules$/,
-                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader?importLoaders=1!postcss-loader'}),
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader?importLoaders=1!postcss-loader',
+                    publicPath: '../'
+                }),
             },
             {
                 test: /\.(scss)$/,
                 exclude: /^node_modules$/,
-                loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!postcss-loader!sass-loader',
-                    publicPath:'../'
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader?importLoaders=1!postcss-loader!sass-loader',
+                    publicPath: '../'
                 }),
             },
             {
