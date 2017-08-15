@@ -10,7 +10,15 @@ function getAppConfig(state = {}, action) {
     if (action.type == AppEventName.saveConfig) {
         const k = action.key;
         state[k]=action.value;
-        return state;
+        return {
+            ...state,
+        };
+    }else if(action.type==AppEventName.playControl){
+        const k = action.key;
+        state[k]=action.value;
+        return {
+            ...state,
+        };
     }
 
     return state;

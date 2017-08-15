@@ -16,10 +16,11 @@ class TrackPlay extends Component {
         appConfig: React.PropTypes.object,
         selectTrack: React.PropTypes.func,
         saveConfig: React.PropTypes.func,
+        playControl: React.PropTypes.func,
     }
 
     state = {
-        play: true,
+        // play: false,
         durationTime: "00:00",
         durationLength: 0,
     }
@@ -36,7 +37,7 @@ class TrackPlay extends Component {
             return;
         }
 
-        let {play} = this.state;
+        let {play} = this.props.appConfig;
 
 
         if (play) {
@@ -45,7 +46,9 @@ class TrackPlay extends Component {
             audio.play();
         }
 
-        this.setState({play: !play});
+        this.props.playControl(!play);
+
+
     }
 
     _previousMusic = () => {
@@ -187,21 +190,19 @@ class TrackPlay extends Component {
         if (this._hasList()) {
             sliderEnabled = false;
             const {tracklist, currentIndex} = this.props.trackSelect;
-
-            let audioUrl = tracklist[currentIndex].path;
             totalLength = tracklist[currentIndex].length;
             name = tracklist[currentIndex].name;
             totalTime = formatDate(totalLength);
-            audio = <audio ref={"audio"} src={audioUrl} autoPlay onTimeUpdate={this._onPlaying}
+            let autoPlay = appConfig.play||false;
+            let audioUrl = appConfig.play===undefined?"":tracklist[currentIndex].path;
+            audio = <audio ref={"audio"} src={audioUrl} autoPlay={autoPlay} onTimeUpdate={this._onPlaying}
                            loop={appConfig.playModel == PlayModel.icon_repeat}
                            onEnded={this._audioEnd}
             />;
-            playicon = this.state.play ? "icon_pause" : "icon_play";
+            playicon = autoPlay ? "icon_pause" : "icon_play";
         }
 
-
-        let soundicon = this.props.appConfig.silent ? "icon_volume_off" : "icon_volume_on";
-
+        let soundicon = appConfig.silent ? "icon_volume_off" : "icon_volume_on";
         return (
             <div style={styles.controller}>
                 <IconButton iconClassName={"icon_previous"} onTouchTap={this._previousMusic}/>
@@ -274,6 +275,9 @@ function mapActionToProps(dispatch) {
         },
         saveConfig: (key, value) => {
             dispatch(appAction.saveConfig(key, value));
+        },
+        playControl: (value) => {
+            dispatch(appAction.playControl(value));
         }
     }
 }

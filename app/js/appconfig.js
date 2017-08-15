@@ -9,6 +9,7 @@ const Conf = keymirror({
     playModel: null,
     trackSelect:null,
     durationLength:null,
+    play:null,
 })
 
 

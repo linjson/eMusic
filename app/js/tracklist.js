@@ -11,6 +11,7 @@ import {
 } from 'material-ui';
 import {connect} from 'react-redux';
 import action from "./action/a_music";
+import appAction from "./action/a_appconfig";
 import {formatDate} from "./utils";
 import filesize from "filesize";
 
@@ -148,6 +149,7 @@ class TrackList extends Component {
         delTrack: React.PropTypes.func,
         moveTrack: React.PropTypes.func,
         sortTrack: React.PropTypes.func,
+        playControl: React.PropTypes.func,
     }
 
     state = {
@@ -162,10 +164,13 @@ class TrackList extends Component {
     }
 
     _play = (data, no) => {
-        let {trackSelect} = this.props;
-        if (trackSelect && trackSelect.trackId == data.id) {
+        let {trackSelect: {trackId}, appConfig: {play}} = this.props;
+        if (play && trackId == data.id) {
             return;
         }
+
+
+        this.props.playControl();
         this.props.selectTrack(this.props.trackList.list, no, data.id);
     }
 
@@ -178,7 +183,7 @@ class TrackList extends Component {
     }
 
     _onItemMove = (data, mid) => {
-        this.props.moveTrack(this.props.trackList.list,data, mid);
+        this.props.moveTrack(this.props.trackList.list, data, mid);
     }
 
     _askConfirm = (n) => {
@@ -206,7 +211,7 @@ class TrackList extends Component {
     }
 
     _sort = ({sortBy, sortDirection}) => {
-        this.props.sortTrack(sortBy,sortDirection.toLowerCase());
+        this.props.sortTrack(sortBy, sortDirection.toLowerCase());
         this.setState({sortBy, sortDirection});
     }
 
@@ -349,6 +354,7 @@ function mapStateToProps(state, props) {
     return {
         trackList: state.trackList,
         trackSelect: state.trackSelect,
+        appConfig: state.appConfig,
     }
 }
 
@@ -367,11 +373,14 @@ function mapActionToProps(dispatch, props) {
         delTrack: (oldlist, data, removeFile) => {
             dispatch(action.delTrack(oldlist, data, removeFile))
         },
-        moveTrack: (oldlist,data, mid) => {
-            dispatch(action.moveTrack(oldlist,data, mid))
+        moveTrack: (oldlist, data, mid) => {
+            dispatch(action.moveTrack(oldlist, data, mid))
         },
         sortTrack: (sortBy, sortDirection) => {
             dispatch(action.sortTrack(sortBy, sortDirection));
+        },
+        playControl: () => {
+            dispatch(appAction.playControl(true));
         }
 
     }

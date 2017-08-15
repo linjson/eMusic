@@ -3,13 +3,13 @@
  */
 
 import {AppEventName} from '../../ipc/EventNameConfig';
-import {saveConfig} from "../appconfig";
+import {saveConfig as setConfig,Conf} from "../appconfig";
 
 
 const action = {
     saveConfig(key, value){
         return (dispatch, state) => {
-            saveConfig(key, value);
+            setConfig(key, value);
             dispatch({
                 type: AppEventName.saveConfig,
                 key,
@@ -17,6 +17,13 @@ const action = {
             })
         }
     },
+    playControl(value){
+        return {
+            type:AppEventName.saveConfig,
+            key:Conf.play,
+            value,
+        }
+    }
 
 }
 
