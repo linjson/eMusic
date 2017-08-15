@@ -56,6 +56,37 @@ function getMusic(state = {}, action) {
             loading: false,
             list
         }
+    } else if (action.type == AppEventName.addMusic) {
+        let {newModel} = action;
+        let {list} = state;
+
+        list.push(newModel);
+        return {
+            loading: false,
+            list,
+        }
+
+    } else if (action.type == AppEventName.delTrack) {
+        let {id, count} = action;
+        let {list} = state;
+        let o = list.find(n => n.id == id);
+        o.count += count;
+        return {
+            loading: false,
+            list,
+        }
+    } else if (action.type == AppEventName.moveTrack) {
+        let {newMId, oldMid} = action;
+        let {list} = state;
+        let newModel = list.find(n => n.id == newMId);
+        newModel.count += 1;
+        let oldModel = list.find(n => n.id == oldMid);
+        oldModel.count -= 1;
+
+        return {
+            loading: false,
+            list,
+        }
     }
 
 

@@ -18,10 +18,12 @@ class SearchBox extends React.Component {
     }
 
     _openSearch = () => {
+        this.refs["searchInput"].focus();
         this.setState({open: true});
     }
 
     _closeSearch = () => {
+        this.refs["searchInput"].value = "";
         this.setState({open: false, hidenRipple: false});
     }
 
@@ -55,7 +57,7 @@ class SearchBox extends React.Component {
 
 
         return <div className={boxStyle}>
-            <input placeholder="搜索" className="searchInput" onKeyDown={this._onKeyDown}/>
+            <input ref="searchInput" placeholder="搜索" className="searchInput" onKeyDown={this._onKeyDown}/>
             <span className="closebtn" onClick={this._closeSearch}>
                 {this._renderRipple()}
                 </span>

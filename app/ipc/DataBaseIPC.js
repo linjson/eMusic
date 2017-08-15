@@ -182,16 +182,14 @@ const DataBaseEventFuncList = [
     },
     {
         eventName: AppEventName.delTrack,
-        event: async (e, {id}) => {
-            const v = await Tracks.destroy({where: {id}});
-            e.returnValue = v;
+        event: (e, {id}) => {
+            Tracks.destroy({where: {id}});
         }
     },
     {
         eventName: AppEventName.moveTrack,
         event: async (e, {id, mid}) => {
-            const v = await Tracks.update({mid}, {where: {id}});
-            e.returnValue = v;
+            Tracks.update({mid}, {where: {id}});
         }
     },
     {

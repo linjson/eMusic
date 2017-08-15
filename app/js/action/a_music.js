@@ -9,26 +9,30 @@ import {ipcRenderer as ipc} from "electron";
 
 const action = {
 
-    _listMusic(dispatch){
-        let list = ipc.sendSync(AppEventName.listMusic, {});
-        dispatch({
-            type: AppEventName.listMusic,
-            list
-        })
-    },
-
-    _listTrack(dispatch){
-        let list = ipc.sendSync(AppEventName.listTrack, {});
-        dispatch({
-            type: AppEventName.listTrack,
-            list,
-        })
-    },
+    // _listMusic(dispatch){
+    //     let list = ipc.sendSync(AppEventName.listMusic, {});
+    //     dispatch({
+    //         type: AppEventName.listMusic,
+    //         list
+    //     })
+    // },
+    //
+    // _listTrack(dispatch){
+    //     let list = ipc.sendSync(AppEventName.listTrack, {});
+    //     dispatch({
+    //         type: AppEventName.listTrack,
+    //         list,
+    //     })
+    // },
 
     addMusic(){
         return (dispatch, state) => {
-            ipc.sendSync(AppEventName.addMusic, {name: "新建列表"});
-            this._listMusic(dispatch);
+            let v=ipc.sendSync(AppEventName.addMusic, {name: "新建列表"});
+            v.count=0;
+            dispatch({
+                type: AppEventName.addMusic,
+                newModel:v,
+            })
         }
     },
 
@@ -132,28 +136,37 @@ const action = {
     },
     delTrack(oldlist, data, removeFile){
         return (d, s) => {
-            ipc.sendSync(AppEventName.delTrack, {id: data.id});
+            ipc.send(AppEventName.delTrack, {id: data.id});
             if (removeFile) {
                 ipc.send(DeleteFile, {path: data.path});
             }
             let list = oldlist.filter(n => n.id != data.id);
-            this._listMusic(d);
+            d({
+                type:AppEventName.delTrack,
+                id:data.mid,
+                count:-1,
+            });
+
             d({
                 type: AppEventName.listTrack,
                 list,
-            })
+            });
         }
     },
 
     moveTrack(oldlist, data, mid){
         return (d, s) => {
-            ipc.sendSync(AppEventName.moveTrack, {id: data.id, mid});
+            ipc.send(AppEventName.moveTrack, {id: data.id, mid});
             let list = oldlist.filter(n => n.id != data.id);
-            this._listMusic(d);
+            d({
+                type:AppEventName.moveTrack,
+                newMId:mid,
+                oldMid:data.mid,
+            });
             d({
                 type: AppEventName.listTrack,
                 list,
-            })
+            });
         }
     },
     searchTrack(name, mid){
@@ -163,8 +176,6 @@ const action = {
                 type: AppEventName.listTrack,
                 list,
             })
-            // console.log("==>", v)
-            // _listMusic(d);
 
         }
     },
