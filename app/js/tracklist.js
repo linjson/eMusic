@@ -166,11 +166,12 @@ class TrackList extends Component {
     _play = (data, no) => {
         let {trackSelect: {trackId}, appConfig: {play}} = this.props;
         if (play && trackId == data.id) {
+            this.props.playControl(false);
             return;
         }
 
 
-        this.props.playControl();
+        this.props.playControl(true);
         this.props.selectTrack(this.props.trackList.list, no, data.id);
     }
 
@@ -220,7 +221,14 @@ class TrackList extends Component {
             this._play(rowData, rowIndex);
         }
 
-        let cls = "icon_play_item";
+        let {trackSelect, appConfig} = this.props;
+        let trackId = -1;
+        if (trackSelect) {
+            trackId = trackSelect.trackId;
+        }
+
+
+        let cls = appConfig.play && trackId == rowData.id ? "icon_pause_item" : "icon_play_item";
         return <IconButton iconClassName={cls} onTouchTap={tap}/>
     }
 
@@ -379,8 +387,8 @@ function mapActionToProps(dispatch, props) {
         sortTrack: (sortBy, sortDirection) => {
             dispatch(action.sortTrack(sortBy, sortDirection));
         },
-        playControl: () => {
-            dispatch(appAction.playControl(true));
+        playControl: (value) => {
+            dispatch(appAction.playControl(value));
         }
 
     }

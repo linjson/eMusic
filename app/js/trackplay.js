@@ -193,12 +193,20 @@ class TrackPlay extends Component {
             totalLength = tracklist[currentIndex].length;
             name = tracklist[currentIndex].name;
             totalTime = formatDate(totalLength);
-            let autoPlay = appConfig.play||false;
-            let audioUrl = appConfig.play===undefined?"":tracklist[currentIndex].path;
+            let autoPlay = appConfig.play || false;
+            let audioUrl = tracklist[currentIndex].path;
             audio = <audio ref={"audio"} src={audioUrl} autoPlay={autoPlay} onTimeUpdate={this._onPlaying}
                            loop={appConfig.playModel == PlayModel.icon_repeat}
                            onEnded={this._audioEnd}
             />;
+
+            if (autoPlay && this._getAudio()) {
+                this._getAudio().play();
+            } else if (this._getAudio()) {
+                this._getAudio().pause();
+            }
+
+
             playicon = autoPlay ? "icon_pause" : "icon_play";
         }
 
