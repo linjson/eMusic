@@ -27,11 +27,11 @@ const action = {
 
     addMusic(){
         return (dispatch, state) => {
-            let v=ipc.sendSync(AppEventName.addMusic, {name: "新建列表"});
-            v.count=0;
+            let v = ipc.sendSync(AppEventName.addMusic, {name: "新建列表"});
+            v.count = 0;
             dispatch({
                 type: AppEventName.addMusic,
-                newModel:v,
+                newModel: v,
             })
         }
     },
@@ -142,9 +142,9 @@ const action = {
             }
             let list = oldlist.filter(n => n.id != data.id);
             d({
-                type:AppEventName.delTrack,
-                id:data.mid,
-                count:-1,
+                type: AppEventName.delTrack,
+                id: data.mid,
+                count: -1,
             });
 
             d({
@@ -159,9 +159,9 @@ const action = {
             ipc.send(AppEventName.moveTrack, {id: data.id, mid});
             let list = oldlist.filter(n => n.id != data.id);
             d({
-                type:AppEventName.moveTrack,
-                newMId:mid,
-                oldMid:data.mid,
+                type: AppEventName.moveTrack,
+                newMId: mid,
+                oldMid: data.mid,
             });
             d({
                 type: AppEventName.listTrack,
@@ -180,11 +180,16 @@ const action = {
         }
     },
     sortTrack(sortBy, sortDirection){
-        return (d, s) => {
-            d({
-                type: AppEventName.sortTrack,
-                sortBy, sortDirection,
-            })
+        return {
+            type: AppEventName.sortTrack,
+            sortBy, sortDirection,
+        }
+    },
+    importMusic(id, count){
+        return {
+            type: AppEventName.importMusic,
+            id,
+            count
         }
     }
 }

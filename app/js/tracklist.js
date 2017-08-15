@@ -242,7 +242,7 @@ class TrackList extends Component {
                             <Table
                                 width={width}
                                 height={height - 1}
-                                headerHeight={40}
+                                headerHeight={30}
                                 rowHeight={40}
                                 rowCount={trackSize}
                                 noRowsRenderer={this._noRowsRenderer}

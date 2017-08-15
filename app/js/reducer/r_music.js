@@ -87,6 +87,15 @@ function getMusic(state = {}, action) {
             loading: false,
             list,
         }
+    }else if(action.type==AppEventName.importMusic){
+        let {id, count} = action;
+        let {list} = state;
+        let o = list.find(n => n.id == id);
+        o.count+=count;
+        return {
+            loading: false,
+            list,
+        }
     }
 
 

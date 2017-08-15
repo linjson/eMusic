@@ -170,7 +170,7 @@ class MusicList extends Component {
         importTrack: React.PropTypes.func,
         sortMusic: React.PropTypes.func,
         renameMusic: React.PropTypes.func,
-        listMusic: React.PropTypes.func,
+        importMusic: React.PropTypes.func,
     }
 
     addMusic = () => {
@@ -206,9 +206,9 @@ class MusicList extends Component {
         }
 
 
-        ipc.on(AppEventName.finishTrack, (e, {id}) => {
+        ipc.on(AppEventName.finishTrack, (e, {id,count}) => {
             this.props.selectMusic(id);
-            this.props.listMusic();
+            this.props.importMusic(id,count);
         });
 
         ipc.on(OpenFileDialog, (e, {files, mid}) => {
@@ -383,8 +383,8 @@ function mapActionToProps(dispatch) {
         showTrackDialog: (dialog) => {
             dispatch(action.showTrackDialog(dialog));
         },
-        listMusic: () => {
-            dispatch(action.listMusic());
+        importMusic: (id,count) => {
+            dispatch(action.importMusic(id,count));
         }
 
     }

@@ -175,7 +175,7 @@ const DataBaseEventFuncList = [
                     });
             }, Promise.resolve()).then(() => {
                 e.sender.send(AppEventName.importDialog, {open: false});
-                e.sender.send(AppEventName.finishTrack, {id: mid});
+                e.sender.send(AppEventName.finishTrack, {id: mid,count:size});
             })
 
         }
