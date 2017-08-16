@@ -164,8 +164,8 @@ class TrackList extends Component {
     }
 
     _play = (data, no) => {
-        let {trackSelect: {trackId}, appConfig: {play}} = this.props;
-        if (play && trackId == data.id) {
+        let {trackSelect, appConfig: {play}} = this.props;
+        if (trackSelect && play && trackSelect.trackId == data.id) {
             this.props.playControl(false);
             return;
         }

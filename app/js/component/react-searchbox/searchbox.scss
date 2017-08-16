@@ -28,14 +28,14 @@ $transitionTime:0.4s;
 
 .box {
   display: flex;
-  height: 36px;
-  margin-top: 8px;
+  height: 30px;
+  margin-top: 10px;
   width: 30px;
   position: relative;
   transition: $transitionTime;
   align-items: center;
   border:1px solid transparent;
-  border-radius: 24px;
+  border-radius: 30px;
 
 }
 
