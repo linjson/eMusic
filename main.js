@@ -2,9 +2,8 @@
  * Created by ljs on 15/10/30.
  */
 const electron = require('electron');
-const {app, BrowserWindow,globalShortcut,ipcMain} = electron;
+const {app, BrowserWindow, globalShortcut, ipcMain} = electron;
 
-//var dialog = require('dialog');
 var path = require('path');
 var url = require('url');
 var fs = require('fs');
@@ -13,10 +12,7 @@ const WindowMove = require('./app/ipc/WindowMoveIPC').moveApp;
 const bindFileDialog = require('./app/ipc/FileDialogIPC').bindFileDialog;
 const {DataBaseInit} = require('./app/ipc/DataBaseIPC');
 require('./app/ipc/AppConfigIPC');
-// var electronCompile=require('electron-compile');
 
-// 保持一个对于 window 对象的全局引用，不然，当 JavaScript 被 GC，
-// window 会被自动地关闭
 var mainWindow = null;
 
 // 当所有窗口被关闭了，退出。
@@ -32,8 +28,7 @@ app.on('will-quit', function () {
     globalShortcut.unregisterAll()
 })
 
-// var cachePath = path.join(__dirname, 'cache');
-// var devMode = (process.argv || []).indexOf('-r') !== -1;
+const debug = /--debug/.test(process.argv[2])
 
 
 // 当 Electron 完成了初始化并且准备创建浏览器窗口的时候
@@ -80,8 +75,13 @@ app.on('ready', function () {
     DataBaseInit(() => {
         // mainWindow.loadURL(targetUrl);
         mainWindow.loadURL(path.join('file://', __dirname, '/dist/index.html'))
+
+    }, debug);
+
+
+    if (debug) {
         mainWindow.openDevTools();
-    });
+    }
 
 
     // 当 window 被关闭，这个事件会被发出

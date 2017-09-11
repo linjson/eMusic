@@ -35,7 +35,8 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: './app/index.html',
-            server: 'http://localhost:7777',
+            server: 'http://localhost:7777/dist/',
+            debug:false,
             excludeChunks: ['js/index'],
         }),
         new CopyWebpackPlugin([

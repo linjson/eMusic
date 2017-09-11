@@ -9,43 +9,49 @@ const {AppEventName} = require('./EventNameConfig')
 const Sequelize = require('sequelize');
 const path = require('path');
 const fs = require('fs');
-// const os = require('os')
+var mp3Length = require('mp3Length');
 
 
 const userDataDir = (electron.app || electron.remote.app).getPath('userData');
+var sequelize;
+var Musics;
+var Tracks;
 
-var dbFile = path.join(userDataDir, "emusic.sqlite3");
-console.log("==>", userDataDir)
-var mp3Length = require('mp3Length');
-var sequelize = new Sequelize(null, null, null, {
-    dialect: 'sqlite',
-    storage: dbFile,
-});
+function DataBaseInit(cb, debug) {
 
 
-var Musics = sequelize.define('musics', {
-    name: Sequelize.STRING,
-    sort: Sequelize.FLOAT,
-}, {
-    timestamps: false // timestamps will now be true
-});
+    var pre = debug ? "test-" : "";
+    var dbFile = path.join(userDataDir, pre + "emusic.sqlite3");
 
-var Tracks = sequelize.define('tracks', {
-    name: Sequelize.STRING,
-    path: Sequelize.STRING,
-    length: Sequelize.INTEGER,
-    size: Sequelize.FLOAT,
-    times: Sequelize.INTEGER,
-    mid: Sequelize.INTEGER,
-}, {
-    timestamps: false // timestamps will now be true
-});
+    debug && console.log("==>", userDataDir)
+
+    sequelize = new Sequelize(null, null, null, {
+        dialect: 'sqlite',
+        storage: dbFile,
+    });
 
 
-function DataBaseInit(cb) {
+    Musics = sequelize.define('musics', {
+        name: Sequelize.STRING,
+        sort: Sequelize.FLOAT,
+    }, {
+        timestamps: false // timestamps will now be true
+    });
+
+    Tracks = sequelize.define('tracks', {
+        name: Sequelize.STRING,
+        path: Sequelize.STRING,
+        length: Sequelize.INTEGER,
+        size: Sequelize.FLOAT,
+        times: Sequelize.INTEGER,
+        mid: Sequelize.INTEGER,
+    }, {
+        timestamps: false // timestamps will now be true
+    });
+
 
     sequelize.sync().then(cb).catch(e => {
-        console.log("==>", e)
+        debug && console.log("==>", e)
     })
 }
 
@@ -175,7 +181,7 @@ const DataBaseEventFuncList = [
                     });
             }, Promise.resolve()).then(() => {
                 e.sender.send(AppEventName.importDialog, {open: false});
-                e.sender.send(AppEventName.finishTrack, {id: mid,count:size});
+                e.sender.send(AppEventName.finishTrack, {id: mid, count: size});
             })
 
         }
