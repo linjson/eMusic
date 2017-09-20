@@ -244,6 +244,15 @@ class TrackList extends Component {
         return <div className={cls} style={{height: '100%'}}></div>
     }
 
+    _rowDoubleClick=({ event, index, rowData })=>{
+        let {trackSelect, appConfig: {play}} = this.props;
+        if(rowData.id!=trackSelect.trackId){
+            this.props.playControl(true);
+            this.props.selectTrack(this.props.trackList.list, index, rowData.id);
+        }
+
+    }
+
     render() {
         let {sortBy, sortDirection} = this.state;
 
@@ -266,6 +275,7 @@ class TrackList extends Component {
                                 sort={this._sort}
                                 sortBy={sortBy}
                                 sortDirection={sortDirection}
+                                onRowDoubleClick={this._rowDoubleClick}
                             >
                                 <Column
                                     width={2}
