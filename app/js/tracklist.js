@@ -246,7 +246,9 @@ class TrackList extends Component {
 
     _rowDoubleClick=({ event, index, rowData })=>{
         let {trackSelect, appConfig: {play}} = this.props;
-        if(rowData.id!=trackSelect.trackId){
+
+
+        if(!play||rowData.id!=trackSelect.trackId){
             this.props.playControl(true);
             this.props.selectTrack(this.props.trackList.list, index, rowData.id);
         }
