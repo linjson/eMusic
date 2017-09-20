@@ -172,7 +172,9 @@ class TrackList extends Component {
 
 
         this.props.playControl(true);
-        this.props.selectTrack(this.props.trackList.list, no, data.id);
+        if(trackSelect.trackId != data.id) {
+            this.props.selectTrack(this.props.trackList.list, no, data.id);
+        }
     }
 
     _onItemDelete = (n) => {

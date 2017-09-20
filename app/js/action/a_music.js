@@ -124,8 +124,15 @@ const action = {
     selectTrack(tracklist, currentIndex, trackId){
         return (d, s) => {
             let track = tracklist[currentIndex];
-            track.times++;
-            ipc.send(AppEventName.increaseTrack, {id: track.id, times: track.times});
+            let times=track.times+1;
+            ipc.send(AppEventName.increaseTrack, {id: track.id, times: times});
+
+            d({
+                type:AppEventName.increaseTrack,
+                id:track.id,
+                times:times
+            })
+
             d({
                 type: AppEventName.selectTrack,
                 tracklist,

@@ -6,7 +6,6 @@ import _ from 'lodash';
 import {AppEventName} from '../../ipc/EventNameConfig';
 const {saveConfig, Conf} = require('../appconfig');
 function getTrack(state = {}, action) {
-
     if (action.type == AppEventName.listTrack) {
         return {
             loading: false,
@@ -22,7 +21,19 @@ function getTrack(state = {}, action) {
             loading: false,
             list,
         }
+    } else if (action.type == AppEventName.increaseTrack) {
+        let {id, times} = action;
+        let {list} = state;
 
+        let obj = list.find(n => {
+            return n.id == id;
+        })
+
+        obj.times = times;
+        return {
+            loading: false,
+            list,
+        }
 
     }
 

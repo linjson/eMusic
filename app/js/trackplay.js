@@ -73,7 +73,20 @@ class TrackPlay extends Component {
     _onPlaying = () => {
         let audio = this._getAudio();
 
-        this.setState({durationTime: formatDate(audio.currentTime), durationLength: Number.parseInt(audio.currentTime)})
+        const {tracklist, currentIndex} = this.props.trackSelect;
+        const totalLength = tracklist[currentIndex].length;
+        const {playModel} = this.props.appConfig;
+
+        if (audio.currentTime >= totalLength&&playModel != PlayModel.icon_repeat) {
+            this._play("next");
+        } else {
+            this.setState({
+                durationTime: formatDate(audio.currentTime),
+                durationLength: Number.parseInt(audio.currentTime)
+            })
+        }
+        // console.log("==>", audio.currentTime)
+
     }
 
     _onSliderChange = (e, newValue) => {
@@ -183,6 +196,7 @@ class TrackPlay extends Component {
         let audio = null;
         let totalTime;
         let totalLength = 1;
+        let index = -1;
         let name = "";
         let playicon = "icon_play";
         let sliderEnabled = true;
@@ -192,14 +206,13 @@ class TrackPlay extends Component {
             const {tracklist, currentIndex} = this.props.trackSelect;
             totalLength = tracklist[currentIndex].length;
             name = tracklist[currentIndex].name;
+            index = currentIndex + 1;
             totalTime = formatDate(totalLength);
             let autoPlay = appConfig.play || false;
             let audioUrl = tracklist[currentIndex].path;
             audio = <audio ref={"audio"} src={audioUrl} autoPlay={autoPlay} onTimeUpdate={this._onPlaying}
                            loop={appConfig.playModel == PlayModel.icon_repeat}
-                           onEnded={this._audioEnd}
             />;
-
             if (autoPlay && this._getAudio()) {
                 this._getAudio().play();
             } else if (this._getAudio()) {
@@ -217,7 +230,7 @@ class TrackPlay extends Component {
                 <IconButton iconClassName={playicon} onTouchTap={this._startMusic}/>
                 <IconButton iconClassName={"icon_next"} onTouchTap={this._nextMusic}/>
                 <div style={styles.message}>
-                    <div style={styles.title}>{name}</div>
+                    <div style={styles.title}>{index}.{name}</div>
                     <div style={{flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                         <Slider style={{flex: 1, marginRight: 15,}} sliderStyle={{margin: 0}}
                                 disabled={sliderEnabled}
